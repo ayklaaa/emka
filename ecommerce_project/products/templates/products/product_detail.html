@@ -1,0 +1,413 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }}{% endblock %}
+{% load static %}
+
+{% block content %}
+<style>
+    .product-page {
+        padding: 2rem 0;
+    }
+    .product-card {
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid var(--bs-border-color);
+        background: var(--bs-body-bg);
+    }
+    .size-label {
+        display: inline-block;
+        margin: 0;
+        cursor: pointer;
+    }
+
+    .size-btn {
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        background: white;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        user-select: none;
+        font-weight: 500;
+    }
+
+    .size-btn:hover:not(.unavailable) {
+        border-color: #000000;
+        background-color: #f8f9fa;
+    }
+
+    .size-btn.active {
+        border-color: #000000;
+        background: #000000;
+        color: white;
+        font-weight: bold;
+        transform: scale(1.05);
+    }
+        /* Кнопка "Добавить в корзину" */
+    .btn-primary {
+        background-color: #000000;
+        border-color: #020102;
+        color: #fff;
+    }
+    .btn-primary:hover {
+        background-color: #000000;
+        border-color: #000000;
+        color: #fff;
+    }
+
+    /* Кнопки избранного и сравнения */
+    .btn-outline-dark {
+        border-color: #000000;
+        color: #000000;
+    }
+    .btn-outline-dark:hover {
+        background-color: #000000;
+        color: #fff;
+        border-color: #000000;
+    }
+
+    /* Кнопка "Отправить отзыв" */
+    .review-form .btn-primary {
+        background-color: #000000;
+        border-color: #000000;
+        color: #fff;
+    }
+    .review-form .btn-primary:hover {
+        background-color: #0b0b0c;
+        border-color: #000000;
+    }
+    .size-btn.unavailable {
+        opacity: 0.4;
+        cursor: not-allowed;
+        background-color: #f8f9fa;
+        color: #6c757d;
+    }
+    .product-carousel {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    .carousel-item img {
+        max-height: 500px;
+        object-fit: contain;
+        background: var(--bs-body-tertiary);
+        padding: 2rem;
+    }
+    .product-info {
+        padding: 1.5rem;
+    }
+    .product-price {
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+    .discounted-price {
+        color: var(--bs-danger);
+    }
+    .original-price {
+        text-decoration: line-through;
+        color: var(--bs-secondary);
+        font-size: 1.2rem;
+    }
+    .reviews-section {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--bs-border-color);
+    }
+    .review-card {
+        border-radius: 8px;
+        border: 1px solid var(--bs-border-color);
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    .review-rating {
+        color: var(--bs-warning);
+    }
+    .review-form {
+        background: var(--bs-body-tertiary-bg);
+        padding: 1.5rem;
+        border-radius: 8px;
+    }
+    .availability {
+        margin-top: 1rem;
+        font-weight: 500;
+    }
+    .in-stock {
+        color: var(--bs-success);
+    }
+    .out-of-stock {
+        color: var(--bs-danger);
+    }
+    @media (max-width: 767.98px) {
+        .carousel-item img {
+            max-height: 300px;
+        }
+        .size-btn {
+            width: 40px;
+            height: 40px;
+        }
+    }
+</style>
+
+<div class="container product-page">
+    <div class="row g-4">
+        <!-- Product Images -->
+        <div class="col-lg-6">
+            <div id="productCarousel" class="carousel slide product-carousel" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% for image in product.images.all %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <img src="{{ image.image.url }}" class="d-block w-100" alt="{{ product.name }}">
+                        </div>
+                    {% empty %}
+                        <div class="carousel-item active">
+                            <img src="{% static 'images/default-product.png' %}" class="d-block w-100" alt="No image">
+                        </div>
+                    {% endfor %}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Product Info -->
+        <div class="col-lg-6">
+            <div class="product-card">
+                <div class="product-info">
+                    <h1>{{ product.name }}</h1>
+                    <p class="text-muted">{{ product.category.name }}</p>
+
+                    {% if product.brand %}
+                    <p class="text-muted">Бренд: {{ product.brand }}</p>
+                    {% endif %}
+
+                    <div class="mb-2">
+                        {% if product.seasonal_tag %}
+                        <span class="badge bg-info">{{ product.seasonal_tag }}</span>
+                        {% endif %}
+                        {% if product.is_new %}
+                        <span class="badge bg-success">Новинка</span>
+                        {% endif %}
+                        {% if product.is_recommended %}
+                        <span class="badge bg-warning text-dark">Рекомендуем</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-flex align-items-center my-4">
+                        <div class="product-price">
+                            {% if product.is_discounted %}
+                                <span class="discounted-price">{{ product.discounted_price }} ₽</span>
+                                <span class="original-price ms-2">{{ product.price }} ₽</span>
+                                <span class="badge bg-danger ms-2">-{{ product.get_discount_percentage }}%</span>
+                            {% else %}
+                                {{ product.price }} ₽
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5>Описание</h5>
+                        <p>{{ product.description }}</p>
+                    </div>
+
+                     <form method="post" action="{% url 'orders:add_to_cart' product.id %}" id="addToCartForm">
+                  {% csrf_token %}
+
+                 <div class="size-selection">
+                  <h5>Выберите размер:</h5>
+                  {% if product.sizes.count %}
+                    <div class="size-buttons">
+                      {% for size in product.sizes.all %}
+                        <label class="size-label" style="cursor:pointer;">
+                          <input type="radio" name="size" value="{{ size.size }}" required style="display:none">
+                          <span class="size-btn">{{ size.size }}</span>
+                        </label>
+                      {% endfor %}
+                    </div>
+
+                    <div id="selected-size-display" class="mt-2 text-muted" style="font-weight: bold;">
+                      Размер не выбран
+                    </div>
+                  {% else %}
+                    <p class="text-muted">Для этого товара не указаны размеры</p>
+                  {% endif %}
+                </div>
+
+                  <button type="submit" class="btn btn-outline-dark mt-3" disabled id="addToCartBtn">
+                    Добавить в корзину
+                  </button>
+                </form>
+
+                    <div class="d-flex flex-column gap-2 mt-4">
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'products:add_to_wishlist' product.id %}" class="btn btn-outline-dark flex-grow-1">
+                                <i class="far fa-heart me-2"></i> В избранное
+                            </a>
+                            <button onclick="addToCompare({{ product.id }})" class="btn btn-outline-dark flex-grow-1">
+                                <i class="fas fa-exchange-alt me-2"></i> Сравнить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reviews Section -->
+    <div class="reviews-section">
+        <h2>Отзывы</h2>
+
+        {% if reviews %}
+            {% for review in reviews %}
+                <div class="review-card">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="mb-0">{{ review.user.get_full_name|default:review.user.username }}</h5>
+                        <small class="text-muted">{{ review.created_at|date:"d.m.Y" }}</small>
+                    </div>
+                    <div class="review-rating mb-2">
+                        {% for i in "12345" %}
+                            <i class="fas fa-star{% if forloop.counter > review.rating %} text-muted{% endif %}"></i>
+                        {% endfor %}
+                    </div>
+                    <p class="mb-0">{{ review.comment }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-dark">
+                Пока нет отзывов. Будьте первым!
+            </div>
+        {% endif %}
+
+        <!-- Review Form -->
+        {% if user.is_authenticated %}
+            <div class="review-form mt-4">
+                <h4>Оставить отзыв</h4>
+                <form method="post" action="{% url 'products:add_review' product.id %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="rating" class="form-label">Оценка</label>
+                        <select class="form-select" id="rating" name="rating" required>
+                            <option value="5">Отлично</option>
+                            <option value="4">Хорошо</option>
+                            <option value="3" selected>Удовлетворительно</option>
+                            <option value="2">Плохо</option>
+                            <option value="1">Ужасно</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="comment" class="form-label">Комментарий</label>
+                        <textarea class="form-control" id="comment" name="comment" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Отправить отзыв</button>
+                </form>
+            </div>
+        {% else %}
+            <div class="alert alert-warning mt-4">
+                <a href="{% url 'users:login' %}?next={{ request.path }}" class="alert-link">Войдите</a>, чтобы оставить отзыв
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const sizeLabels = document.querySelectorAll('.size-label');
+    const addToCartBtn = document.getElementById('addToCartBtn');
+    const selectedSizeDisplay = document.getElementById('selected-size-display');
+    const addToCartForm = document.getElementById('addToCartForm');
+
+    console.log('Найдено размеров:', sizeLabels.length);
+    console.log('Кнопка найдена:', addToCartBtn);
+
+    sizeLabels.forEach((label, index) => {
+        const radio = label.querySelector('input[type="radio"]');
+        const sizeBtn = label.querySelector('.size-btn');
+
+        console.log(`Размер ${index}:`, radio ? radio.value : 'не найден', 'disabled:', radio ? radio.disabled : 'n/a');
+
+        // Пропускаем недоступные размеры
+        if (!radio || radio.disabled) return;
+
+        // Используем click на label, но без preventDefault
+        label.addEventListener('click', function() {
+            console.log('Клик по размеру:', radio.value);
+
+            // Удаляем активный класс у всех кнопок
+            document.querySelectorAll('.size-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Добавляем активный класс к выбранной кнопке
+            sizeBtn.classList.add('active');
+
+            // Устанавливаем значение радио-кнопки (это должно произойти автоматически)
+            radio.checked = true;
+
+            // Обновляем отображение выбранного размера
+            if (selectedSizeDisplay) {
+                selectedSizeDisplay.textContent = `Выбранный размер: ${radio.value}`;
+                selectedSizeDisplay.style.color = '#28a745';
+            }
+
+            // Активируем кнопку добавления в корзину
+            if (addToCartBtn) {
+                addToCartBtn.disabled = false;
+                addToCartBtn.style.opacity = '1';
+                console.log('Кнопка активирована');
+            }
+        });
+    });
+
+    // Обработка отправки формы
+    if (addToCartForm) {
+        addToCartForm.addEventListener('submit', function(e) {
+            const selectedRadio = document.querySelector('input[name="size"]:checked');
+
+            console.log('Отправка формы, выбранный размер:', selectedRadio ? selectedRadio.value : 'не выбран');
+
+            if (!selectedRadio) {
+                e.preventDefault();
+                alert('Пожалуйста, выберите размер перед добавлением в корзину');
+                return false;
+            }
+
+            // Показываем процесс загрузки
+            addToCartBtn.textContent = 'Добавляем...';
+            addToCartBtn.disabled = true;
+        });
+    }
+});
+
+// Функция для добавления в сравнение
+function addToCompare(productId) {
+    fetch(`/products/compare/add/${productId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({product_id: productId})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'added') {
+            alert('Товар добавлен в сравнение');
+        } else if (data.status === 'exists') {
+            alert('Этот товар уже в списке сравнения');
+        } else if (data.status === 'limit') {
+            alert('Можно сравнить не более 4 товаров');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Произошла ошибка при добавлении в сравнение');
+    });
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,587 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Сравнение товаров{% endblock %}
+
+{% block content %}
+<style>
+    /* Тема светлая/тёмная - базовые цвета */
+    body {
+        background-color: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .container.py-4 {
+        background-color: var(--bs-body-bg);
+    }
+
+    /* Карточки сравнения */
+    .compare-container {
+        border: 1px solid var(--bs-border-color);
+        background-color: var(--bs-body-bg);
+        border-radius: 1rem;
+        padding: 1.5rem 1.5rem;
+        box-shadow: 0 0 15px rgb(0 0 0 / 0.05);
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+    .compare-product-card {
+        transition: all 0.3s ease;
+        border: 1px solid var(--bs-border-color);
+        border-radius: 0.75rem;
+        background-color: var(--bs-body-bg);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        padding: 1rem;
+    }
+
+    .compare-product-card:hover {
+        box-shadow: 0 4px 15px rgb(0 0 0 / 0.15);
+    }
+
+    /* Изображение товара */
+    .product-image-container {
+        height: 160px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        background-color: var(--bs-body-tertiary);
+        margin-bottom: 1rem;
+    }
+
+    .product-image-container img {
+        max-height: 160px;
+        object-fit: contain;
+        width: 100%;
+        transition: transform 0.3s ease;
+    }
+
+    .compare-product-card:hover .product-image-container img {
+        transform: scale(1.05);
+    }
+
+    /* Заголовок продукта */
+    .product-title {
+        font-weight: 600;
+        font-size: 1rem;
+        color: var(--bs-body-color);
+        margin-bottom: 0.75rem;
+        flex-grow: 1;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Цена */
+    .product-price {
+        font-weight: 700;
+        font-size: 1.25rem;
+        color: var(--bs-body-color);
+        margin-bottom: 1rem;
+    }
+    .text-decoration-line-through {
+        color: var(--bs-secondary-text-color, #6c757d);
+        font-size: 0.9rem;
+        margin-left: 0.5rem;
+    }
+
+    /* Звёзды рейтинга */
+    .product-rating .stars i {
+        color: #ffc107; /* Звёзды всегда желтые */
+        margin-right: 0.1rem;
+        font-size: 1rem;
+    }
+    .product-rating small {
+        color: var(--bs-secondary-text-color, #6c757d);
+        font-size: 0.85rem;
+        margin-left: 0.5rem;
+    }
+
+    /* Бэйджи в характеристиках */
+    .badge {
+        font-weight: 500;
+        color: var(--bs-body-color);
+        background-color: var(--bs-body-tertiary);
+        border: 1px solid var(--bs-border-color);
+        margin-right: 0.25rem;
+        margin-bottom: 0.25rem;
+    }
+
+    /* Наличие товара */
+    .badge.bg-success {
+        background-color: var(--bs-body-tertiary);
+        color: var(--bs-body-color);
+        border-color: var(--bs-border-color);
+        font-weight: 600;
+    }
+    .badge.bg-secondary {
+        background-color: var(--bs-body-tertiary);
+        color: var(--bs-body-color);
+        border-color: var(--bs-border-color);
+        font-weight: 600;
+    }
+
+    /* Кнопки */
+    .btn-outline-dark {
+        color: var(--bs-body-color);
+        border-color: var(--bs-border-color);
+        background-color: transparent;
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+    .btn-outline-dark:hover,
+    .btn-outline-dark:focus {
+        background-color: var(--bs-body-color);
+        color: var(--bs-body-bg);
+        border-color: var(--bs-body-color);
+        text-decoration: none;
+    }
+
+    .btn-dark {
+        background-color: var(--bs-body-color);
+        color: var(--bs-body-bg);
+        border: 1px solid var(--bs-body-color);
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+    .btn-dark:hover,
+    .btn-dark:focus {
+        background-color: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        border-color: var(--bs-body-color);
+        text-decoration: none;
+    }
+
+    /* Иконки кнопок */
+    .btn .fas, .btn .far, .btn .fab {
+        vertical-align: middle;
+    }
+
+    /* Кнопки удаления */
+    .compare-remove {
+        background: transparent;
+        color: var(--bs-body-color);
+        border: 1px solid var(--bs-border-color);
+        border-radius: 0.375rem;
+        padding: 0.35rem 0.5rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .compare-remove:hover,
+    .compare-remove:focus {
+        background-color: var(--bs-body-color);
+        color: var(--bs-body-bg);
+    }
+
+    /* Заголовки и тексты таблицы */
+    .compare-table th, .compare-table td {
+        color: var(--bs-body-color);
+        border-color: var(--bs-border-color);
+        vertical-align: middle;
+        padding: 0.75rem 0.75rem;
+    }
+
+    .compare-table th.bg-body-tertiary {
+        background-color: var(--bs-body-tertiary);
+    }
+
+    /* Заголовки секций */
+    .compare-table th.fw-normal {
+        font-weight: 500;
+        font-size: 1rem;
+    }
+
+    /* Контейнер пустого сравнения */
+    .empty-compare {
+        background-color: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        border: 1px solid var(--bs-border-color);
+        border-radius: 1rem;
+        box-shadow: 0 0 15px rgb(0 0 0 / 0.05);
+        padding: 3rem 2rem;
+        max-width: 460px;
+        margin: 3rem auto;
+    }
+
+    .empty-compare i {
+        color: var(--bs-secondary-text-color, #6c757d);
+    }
+
+    /* Модальное окно */
+    .modal-content {
+        background-color: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        border-radius: 1rem;
+        border: 1px solid var(--bs-border-color);
+    }
+    .modal-header, .modal-body {
+        background-color: var(--bs-body-bg);
+        color: var(--bs-body-color);
+    }
+
+    .form-control.bg-body {
+        background-color: var(--bs-body-bg) !important;
+        color: var(--bs-body-color) !important;
+        border: 1px solid var(--bs-border-color) !important;
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+    .form-control.bg-body:focus {
+        background-color: var(--bs-body-bg) !important;
+        color: var(--bs-body-color) !important;
+        border-color: var(--bs-body-color) !important;
+        box-shadow: 0 0 0 0.2rem rgba(0,0,0,0.1);
+    }
+
+    .input-group-btn .btn-dark {
+        background-color: var(--bs-body-color);
+        color: var(--bs-body-bg);
+        border: 1px solid var(--bs-body-color);
+    }
+    .input-group-btn .btn-dark:hover {
+        background-color: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        border-color: var(--bs-body-color);
+    }
+
+    /* Адаптивность таблицы */
+    @media (max-width: 992px) {
+        .compare-product-card {
+            padding: 1rem 0.5rem;
+        }
+        .product-image-container {
+            height: 130px;
+            margin-bottom: 0.75rem;
+        }
+        .product-title {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        .product-price {
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .compare-table,
+        .compare-table thead,
+        .compare-table tbody,
+        .compare-table th,
+        .compare-table td,
+        .compare-table tr {
+            display: block;
+        }
+
+        .compare-table thead tr {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
+
+        .compare-table tr {
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--bs-border-color);
+        }
+
+        .compare-table td {
+            border: none;
+            position: relative;
+            padding-left: 50%;
+            text-align: left;
+        }
+
+        .compare-table td:before {
+            position: absolute;
+            top: 0.75rem;
+            left: 1rem;
+            width: 45%;
+            padding-right: 0.5rem;
+            white-space: nowrap;
+            font-weight: 600;
+            color: var(--bs-body-color);
+            content: attr(data-label);
+        }
+
+        /* Уберём повторяющиеся ячейки для первой колонки */
+        .compare-table td:first-child {
+            padding-left: 1rem;
+            text-align: right;
+            font-weight: 700;
+            color: var(--bs-body-color);
+        }
+        .compare-table td:first-child:before {
+            display: none;
+        }
+    }
+</style>
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <h1 class="h2 mb-0 fw-bold text-body">Сравнение товаров</h1>
+        {% if products %}
+        <button class="btn btn-outline-dark btn-sm" id="clearCompare" aria-label="Очистить список">
+            <i class="fas fa-trash-alt me-2" aria-hidden="true"></i>Очистить список
+        </button>
+        {% endif %}
+    </div>
+
+    {% if products %}
+    <div class="compare-container rounded-3 shadow-sm p-3 p-md-4 border">
+        <div class="table-responsive">
+            <table class="table table-hover compare-table mb-0" role="table" aria-label="Таблица сравнения товаров">
+                <thead>
+                    <tr>
+                        <th class="bg-body-tertiary text-body" style="width: 20%; min-width: 200px;">Характеристики</th>
+                        {% for product in products %}
+                        <th class="text-center p-0" style="width: calc(80% / {{ products|length }});">
+                            <div class="position-relative h-100">
+                                <div class="compare-product-card p-3 h-100 d-flex flex-column border" tabindex="0" aria-label="Карточка товара {{ product.name }}">
+                                    <div class="product-image-container mb-3 bg-body-secondary rounded">
+                                        {% if product.images.first %}
+                                        <img src="{{ product.images.first.image.url }}"
+                                             alt="{{ product.name }}"
+                                             class="img-fluid rounded">
+                                        {% else %}
+                                        <div class="d-flex align-items-center justify-content-center h-100" aria-label="Изображение отсутствует">
+                                            <i class="fas fa-image fa-3x text-body-tertiary"></i>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <h5 class="product-title fs-6 mb-2 text-body">{{ product.name }}</h5>
+
+                                    <div class="product-price mb-2 mt-auto" aria-label="Цена">
+                                        {% if product.discounted_price %}
+                                        <span class="fs-5 fw-bold">{{ product.discounted_price }} ₽</span>
+                                        <span class="text-decoration-line-through text-body-tertiary ms-2 small">{{ product.price }} ₽</span>
+                                        {% else %}
+                                        <span class="fs-5 fw-bold">{{ product.price }} ₽</span>
+                                        {% endif %}
+                                    </div>
+
+                                    {% if product.rating %}
+                                    <div class="product-rating mb-3" aria-label="Рейтинг товара">
+                                        <div class="stars text-warning" role="img" aria-label="Количество звезд: {{ product.rating }}">
+                                            {% for i in "12345" %}
+                                            {% if forloop.counter <= product.rating %}
+                                            <i class="fas fa-star"></i>
+                                            {% else %}
+                                            <i class="far fa-star"></i>
+                                            {% endif %}
+                                            {% endfor %}
+                                            <small class="text-body-tertiary ms-2">({{ product.reviews.count }})</small>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+
+                                    <div class="d-flex justify-content-center gap-2 mt-auto">
+                                        <a href="{% url 'orders:add_to_cart' product.id %}"
+                                           class="btn btn-sm btn-dark flex-grow-1" aria-label="Купить {{ product.name }}">
+                                            <i class="fas fa-shopping-cart me-1" aria-hidden="true"></i>Купить
+                                        </a>
+                                        <button class="btn btn-sm btn-outline-dark compare-remove"
+                                                data-id="{{ product.id }}"
+                                                title="Удалить"
+                                                aria-label="Удалить {{ product.name }} из сравнения">
+                                            <i class="fas fa-times" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Основные характеристики -->
+                    <tr class="bg-body-tertiary">
+                        <th colspan="{{ products|length|add:1 }}" class="fw-normal text-body">
+                            <i class="fas fa-list-alt me-2"></i> Основные характеристики
+                        </th>
+                    </tr>
+                    <tr>
+                        <td class="text-body" data-label="Категория">Категория</td>
+                        {% for product in products %}
+                        <td class="text-center text-body" data-label="Категория: {{ product.name }}">{{ product.category.name|default:"-" }}</td>
+                        {% endfor %}
+                    </tr>
+
+                    <!-- Технические характеристики -->
+                    <tr class="bg-body-tertiary">
+                        <th colspan="{{ products|length|add:1 }}" class="fw-normal text-body">
+                            <i class="fas fa-cogs me-2"></i> Технические характеристики
+                        </th>
+                    </tr>
+                    <tr>
+                        <td class="text-body" data-label="Размеры">Размеры</td>
+                        {% for product in products %}
+                        <td class="text-center text-body" data-label="Размеры: {{ product.name }}">
+                            {% if product.sizes.all %}
+                                {% for size in product.sizes.all %}
+                                <span class="badge" aria-label="Размер {{ size.size }}">{{ size.size }}</span>
+                                {% endfor %}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+
+                    <!-- Дополнительная информация -->
+                    <tr class="bg-body-tertiary">
+                        <th colspan="{{ products|length|add:1 }}" class="fw-normal text-body">
+                            <i class="fas fa-info-circle me-2"></i> Дополнительная информация
+                        </th>
+                    </tr>
+                    <tr>
+                        <td class="text-body" data-label="Наличие">Наличие</td>
+                        {% for product in products %}
+                        <td class="text-center text-body" data-label="Наличие: {{ product.name }}">
+                            {% if product.stock > 0 %}
+                            <span class="badge">{{ "В наличии ("|add:product.stock|stringformat:"d"|add:")" }}</span>
+                            {% else %}
+                            <span class="badge">Под заказ</span>
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td class="text-body" data-label="Гарантия">Гарантия</td>
+                        {% for product in products %}
+                        <td class="text-center text-body" data-label="Гарантия: {{ product.name }}">{{ product.warranty|default:"12 мес." }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td class="text-body" data-label="Описание">Описание</td>
+                        {% for product in products %}
+                        <td class="small text-body" data-label="Описание: {{ product.name }}">{{ product.description|truncatechars:120|default:"-" }}</td>
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-4 pt-3 border-top">
+            <a href="{% url 'products:product_list' %}" class="btn btn-outline-secondary mb-2 mb-md-0" aria-label="Вернуться в каталог">
+                <i class="fas fa-arrow-left me-2" aria-hidden="true"></i>Вернуться в каталог
+            </a>
+            <div class="d-flex gap-2">
+                <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#shareModal" aria-label="Поделиться сравнением">
+                    <i class="fas fa-share-alt me-2" aria-hidden="true"></i>Поделиться
+                </button>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-compare text-center py-5 bg-body rounded-3 shadow-sm border" role="region" aria-live="polite">
+        <div class="mb-4">
+            <i class="fas fa-exchange-alt fa-4x text-body-tertiary" aria-hidden="true"></i>
+        </div>
+        <h3 class="h4 text-body mb-3">Список сравнения пуст</h3>
+        <p class="text-body-secondary mb-4">Добавьте товары для сравнения из каталога</p>
+        <a href="{% url 'products:product_list' %}" class="btn btn-dark px-4" aria-label="Перейти в каталог">
+            <i class="fas fa-shopping-bag me-2" aria-hidden="true"></i>Перейти в каталог
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Модальное окно "Поделиться" -->
+<div class="modal fade" id="shareModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-body">Поделиться сравнением</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control bg-body" id="shareUrl"
+                           value="{{ request.build_absolute_uri }}" readonly aria-label="Ссылка для копирования">
+                    <button class="btn btn-dark" onclick="copyShareUrl()" aria-label="Копировать ссылку">
+                        <i class="fas fa-copy" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div class="d-flex gap-3 fs-4 justify-content-center">
+                    <a href="https://vk.com/share.php?url={{ request.build_absolute_uri }}" target="_blank"
+                       class="text-body" title="Поделиться ВКонтакте" rel="noopener noreferrer" aria-label="Поделиться ВКонтакте">
+                        <i class="fab fa-vk"></i>
+                    </a>
+                    <a href="https://t.me/share/url?url={{ request.build_absolute_uri }}" target="_blank"
+                       class="text-body" title="Поделиться в Telegram" rel="noopener noreferrer" aria-label="Поделиться в Telegram">
+                        <i class="fab fa-telegram"></i>
+                    </a>
+                    <a href="https://wa.me/?text={{ request.build_absolute_uri }}" target="_blank"
+                       class="text-body" title="Поделиться в WhatsApp" rel="noopener noreferrer" aria-label="Поделиться в WhatsApp">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    // Удаление товара из сравнения
+    $('.compare-remove').click(function() {
+        const productId = $(this).data('id');
+        const $card = $(this).closest('th');
+
+        if (confirm('Удалить товар из сравнения?')) {
+            $.ajax({
+                url: `/products/compare/remove/${productId}/`,
+                type: 'POST',
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                beforeSend: function() {
+                    $card.addClass('bg-body-tertiary');
+                },
+                success: function() {
+                    $card.fadeOut(300, function() {
+                        $(this).remove();
+                        if ($('.compare-remove').length === 0) {
+                            location.reload();
+                        }
+                    });
+                },
+                error: function() {
+                    alert('Ошибка при удалении товара из сравнения');
+                }
+            });
+        }
+    });
+
+    // Очистка всего списка сравнения
+    $('#clearCompare').click(function() {
+        if (confirm('Вы уверены, что хотите очистить список сравнения?')) {
+            $.ajax({
+                url: '{% url "products:compare_clear" %}',
+                type: 'POST',
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function() {
+                    location.reload();
+                },
+                error: function() {
+                    alert('Ошибка при очистке списка сравнения');
+                }
+            });
+        }
+    });
+
+    // Копирование ссылки
+    window.copyShareUrl = function() {
+        const copyText = document.getElementById("shareUrl");
+        copyText.select();
+        copyText.setSelectionRange(0, 99999); /* Для мобильных устройств */
+        document.execCommand("copy");
+        alert("Ссылка скопирована в буфер обмена");
+    }
+});
+</script>
+{% endblock %}

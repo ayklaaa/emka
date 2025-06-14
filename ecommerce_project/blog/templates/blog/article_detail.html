@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ article.title }} | Блог{% endblock %}
+
+{% block content %}
+
+<section class="article-container fade-in">
+    <article class="article-content">
+        <div class="article-header text-center">
+            <div class="article-meta mb-3 text-muted small animate-up">
+                <span>{{ article.published_date|date:"d E Y" }}</span> |
+                <span>Автор: {{ article.author.get_full_name }}</span>
+            </div>
+
+            <h1 class="article-title mb-4 animate-up">{{ article.title }}</h1>
+
+            {% if article.image %}
+            <div class="article-image-container animate-fade">
+                <img src="{{ article.image.url }}" alt="{{ article.title }}" class="img-fluid rounded shadow-sm">
+                {% if article.image_caption %}
+                <p class="image-caption text-muted mt-2 small">{{ article.image_caption }}</p>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="article-text mt-5 animate-fade">
+            {{ article.content|safe }}
+        </div>
+
+        <div class="article-footer mt-5 text-center">
+            {% if user.is_staff %}
+            <div class="article-actions d-flex justify-content-center gap-3 mb-4">
+               <a href="{% url 'blog:edit_article' article.id %}" class="btn btn-dark px-4 py-2 animate-up">
+                    ✏️ Редактировать
+                </a>
+
+                <a href="{% url 'blog:delete_article' article.id %}"
+                   onclick="return confirm('Вы уверены, что хотите удалить эту статью?')"
+                   class="btn btn-outline px-4 py-2 animate-up">
+                    🗑️ Удалить
+                </a>
+            </div>
+            {% endif %}
+            <a href="{% url 'blog:blog' %}" class="btn btn-outline-dark px-4 py-2 animate-up">
+                ← Назад ко всем статьям
+            </a>
+        </div>
+    </article>
+</section>
+{% endblock %}

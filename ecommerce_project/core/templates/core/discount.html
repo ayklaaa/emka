@@ -1,0 +1,401 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Акции и скидки | Обувь{% endblock %}
+
+{% block content %}
+<style>
+    /* ====== Общие стили ====== */
+    .promo-banner {
+        background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('{% static "media/banner-shoes.jpg" %}');
+        background-size: cover;
+        background-position: center;
+        color: white;
+        text-align: center;
+        padding: 80px 20px;
+        margin-bottom: 40px;
+        transition: all 0.3s ease;
+    }
+
+    .promo-content {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .promo-content h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    }
+
+    .promo-content p {
+        font-size: 1.2rem;
+        margin-bottom: 25px;
+    }
+
+    .btn-promo {
+        background-color: #000;
+        color: white;
+        padding: 12px 30px;
+        font-size: 1.1rem;
+        border-radius: 50px;
+        border: none;
+        transition: all 0.3s;
+    }
+
+    .btn-promo:hover {
+        background-color: #333;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Фильтры */
+    .filter-section {
+        margin-bottom: 40px;
+    }
+
+    .filter-box {
+        position: relative;
+    }
+
+    .filter-select {
+        width: 100%;
+        padding: 12px 20px;
+        border: 2px solid #e0e0e0;
+        border-radius: 50px;
+        font-size: 1rem;
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 15px center;
+        background-size: 20px;
+        transition: all 0.3s;
+    }
+
+    .filter-select:focus {
+        border-color: #000;
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);
+        outline: none;
+    }
+
+    /* Секция товаров */
+    .section-title {
+        text-align: center;
+        margin-bottom: 40px;
+        font-size: 2rem;
+        color: #333;
+        position: relative;
+    }
+
+    .section-title:after {
+        content: '';
+        display: block;
+        width: 80px;
+        height: 3px;
+        background: #000;
+        margin: 15px auto 0;
+    }
+
+    /* Карточка товара */
+    .product-card {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        position: relative;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #eee;
+    }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #000;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        z-index: 1;
+    }
+
+    .product-image {
+        padding: 15px;
+        text-align: center;
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f9f9f9;
+    }
+
+    .product-image img {
+        max-height: 180px;
+        width: auto;
+        object-fit: contain;
+        transition: transform 0.3s;
+    }
+
+    .product-card:hover .product-image img {
+        transform: scale(1.05);
+    }
+
+    .product-details {
+        padding: 20px;
+        background: #fff;
+        border-top: 1px solid #eee;
+    }
+
+    .product-title {
+        font-size: 1rem;
+        margin-bottom: 10px;
+        color: #333;
+        font-weight: 600;
+        height: 40px;
+        overflow: hidden;
+    }
+
+    .price-box {
+        margin-bottom: 15px;
+    }
+
+    .old-price {
+        text-decoration: line-through;
+        color: #999;
+        font-size: 0.9rem;
+        margin-right: 8px;
+    }
+
+    .new-price {
+        color: #d32f2f;
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    .btn-add-to-cart {
+        width: 100%;
+        background: #333;
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 0.9rem;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .btn-add-to-cart:hover {
+        background: #000;
+    }
+
+    /* Пустая секция */
+    .empty-products {
+        text-align: center;
+        padding: 50px 20px;
+        background: #f9f9f9;
+        border-radius: 10px;
+        border: 1px solid #eee;
+    }
+
+    .empty-products i {
+        font-size: 3rem;
+        color: #ccc;
+        margin-bottom: 20px;
+    }
+
+    .empty-products p {
+        font-size: 1.2rem;
+        color: #666;
+        margin-bottom: 20px;
+    }
+
+    /* ====== Темная тема ====== */
+    body.dark-theme .promo-banner {
+        background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('{% static "media/banner-shoes.jpg" %}');
+    }
+
+    body.dark-theme .filter-select {
+        background-color: #2d2d2d;
+        color: #fff;
+        border-color: #444;
+    }
+
+    body.dark-theme .filter-select:focus {
+        border-color: #666;
+        box-shadow: 0 0 0 3px rgba(100, 100, 100, 0.25);
+    }
+
+    body.dark-theme .section-title {
+        color: #fff;
+    }
+
+    body.dark-theme .section-title:after {
+        background: #666;
+    }
+
+    body.dark-theme .product-card {
+        background-color: #1e1e1e;
+        border-color: #333;
+    }
+
+    body.dark-theme .product-image {
+        background-color: #252525;
+    }
+
+    body.dark-theme .product-details {
+        background-color: #1e1e1e;
+        border-color: #333;
+    }
+
+    body.dark-theme .product-title {
+        color: #fff;
+    }
+
+    body.dark-theme .old-price {
+        color: #999;
+    }
+
+    body.dark-theme .new-price {
+        color: #ff6b6b;
+    }
+
+    body.dark-theme .btn-add-to-cart {
+        background: #444;
+    }
+
+    body.dark-theme .btn-add-to-cart:hover {
+        background: #555;
+    }
+
+    body.dark-theme .empty-products {
+        background-color: #252525;
+        border-color: #333;
+    }
+
+    body.dark-theme .empty-products p {
+        color: #ccc;
+    }
+
+    /* Адаптивность */
+    @media (max-width: 768px) {
+        .promo-content h1 {
+            font-size: 2rem;
+        }
+
+        .promo-content p {
+            font-size: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+        }
+
+        .product-card {
+            margin-bottom: 20px;
+        }
+    }
+</style>
+
+<!-- Герой-баннер -->
+<div class="promo-banner">
+    <div class="promo-content">
+        <h1>Грандиозные скидки до 50%</h1>
+        <p>Только специальные предложения на лучшие товары</p>
+        <a href="/discount.html" class="btn btn-promo">Смотреть акции</a>
+    </div>
+</div>
+
+<!-- Фильтры -->
+<div class="container filter-section">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="filter-box">
+                <select class="filter-select" id="filterSelect" onchange="window.location.href='?filter='+this.value">
+                    <option value="" {% if not current_filter %}selected{% endif %}>Все товары</option>
+                    <option value="new" {% if current_filter == 'new' %}selected{% endif %}>Новинки</option>
+                    <option value="cheap" {% if current_filter == 'cheap' %}selected{% endif %}>До 5 000 ₽</option>
+                    <option value="expensive" {% if current_filter == 'expensive' %}selected{% endif %}>От 10 000 ₽</option>
+                    <option value="popular" {% if current_filter == 'popular' %}selected{% endif %}>Популярные</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Секция с товарами -->
+<section id="discount-products" class="products-section">
+    <div class="container">
+        <h2 class="section-title">Товары по акции</h2>
+
+        {% if page_obj %}
+        <div class="row">
+            {% for product in page_obj %}
+            <div class="col-6 col-md-4 col-lg-3 mb-4">
+                <div class="product-card">
+                    <div class="product-badge">
+                        -{{ product.get_discount_percentage }}%
+                    </div>
+                    <div class="product-image">
+                        {% with product.images.first as first_image %}
+                            {% if first_image %}
+                            <img src="{{ first_image.image.url }}" alt="{{ product.name }}" class="img-fluid">
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                    <div class="product-details">
+                        <h3 class="product-title">{{ product.name|truncatechars:30 }}</h3>
+                        <div class="price-box">
+                            <span class="old-price">{{ product.price }} ₽</span>
+                            <span class="new-price">{{ product.discounted_price }} ₽</span>
+                        </div>
+                        <a href="{% url 'orders:add_to_cart' product.id %}" class="btn btn-add-to-cart">
+                            <i class="fas fa-shopping-cart"></i> В корзину
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Пагинация -->
+        <div class="pagination mt-4">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?filter={{ current_filter }}&page=1" class="btn btn-outline-dark">&laquo; первая</a>
+                    <a href="?filter={{ current_filter }}&page={{ page_obj.previous_page_number }}" class="btn btn-outline-dark">предыдущая</a>
+                {% endif %}
+
+                <span class="current">
+                    Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?filter={{ current_filter }}&page={{ page_obj.next_page_number }}" class="btn btn-outline-dark">следующая</a>
+                    <a href="?filter={{ current_filter }}&page={{ page_obj.paginator.num_pages }}" class="btn btn-outline-dark">последняя &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+        {% else %}
+        <div class="empty-products">
+            <i class="fas fa-exclamation-circle"></i>
+            <p>Нет товаров по выбранному фильтру</p>
+            <a href="?filter=" class="btn btn-outline-primary">Сбросить фильтры</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,10 @@
+[
+  {
+    "model": "products.brand",
+    "pk": 1,
+    "fields": {
+      "name": "Lele",
+      "slug": "lele"
+    }
+  }
+]

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-3">Ваши достижения</h2>
+
+    <p><strong>Всего заказов:</strong> {{ total_orders }}</p>
+    <p><strong>Общая сумма покупок:</strong> {{ total_spent }} руб.</p>
+    <p><strong>Средняя сумма заказа:</strong> {{ avg_order }} руб.</p>
+
+    <h3 class="mt-4">Достижения</h3>
+    <div class="row">
+        {% for reward in rewards %}
+            <div class="col-md-4">
+                <div class="card mb-3 {% if reward.earned %}border-success{% else %}border-secondary{% endif %}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ reward.name }}</h5>
+                        <p class="card-text">{{ reward.description }}</p>
+                        {% if reward.earned %}
+                            <span class="badge bg-success">Получено</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Еще не получено</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

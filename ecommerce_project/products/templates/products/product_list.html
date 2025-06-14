@@ -1,0 +1,371 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Каталог товаров{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/products.css' %}">
+<style>
+    /* Общие стили карточек товара */
+    .product-card {
+        transition: all 0.3s ease;
+        border: 1px solid var(--bs-border-color);
+        border-radius: 12px;
+        overflow: hidden;
+        background: var(--bs-body-bg);
+        height: 100%;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .product-image-wrapper {
+        height: 200px;
+        position: relative;
+        overflow: hidden;
+        background: var(--bs-body-tertiary);
+    }
+
+    .product-img {
+        height: 100%;
+        width: 100%;
+        object-fit: contain;
+        padding: 1rem;
+        transition: transform 0.3s ease;
+    }
+    .product-card:hover .product-img {
+        transform: scale(1.05);
+    }
+
+    .product-actions {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        z-index: 10;
+    }
+
+    .action-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        border: 1px solid var(--bs-border-color);
+        transition: all 0.25s ease;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .action-btn:hover {
+        transform: scale(1.15);
+        background: var(--bs-tertiary-bg);
+    }
+
+    .wishlist-btn.active {
+        color: var(--bs-danger);
+    }
+
+    .product-body {
+        padding: 1.25rem;
+        text-align: center;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .product-title {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--bs-body-color);
+        min-height: 2.5rem; /* для выравнивания высоты */
+    }
+
+    .product-price {
+        color: var(--bs-body-color);
+        font-weight: 700;
+    }
+
+    /* Кнопка подробнее */
+    .btn-outline-dark {
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .btn-outline-dark:hover {
+        background-color: var(--bs-dark);
+        color: var(--bs-white);
+        border-color: var(--bs-dark);
+    }
+
+    /* Кнопки соцсетей */
+    .social-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--bs-border-color);
+        color: var(--bs-body-color);
+        transition: all 0.2s ease;
+        font-size: 18px;
+    }
+
+    .social-btn:hover {
+        background: var(--bs-tertiary-bg);
+    }
+
+    /* Активное состояние избранного */
+    .wishlist-btn.active i {
+        color: var(--bs-danger);
+    }
+        /* Сделать ссылки пагинации чёрными */
+    .pagination .page-link {
+        color: black;
+        border-color: black;
+    }
+
+    /* При наведении — белый текст на чёрном фоне */
+    .pagination .page-link:hover {
+        background-color: black;
+        color: white;
+        border-color: black;
+    }
+
+    /* Активная страница */
+    .pagination .active .page-link {
+        background-color: black;
+        border-color: black;
+        color: white;
+    }
+
+    /* Темная тема адаптация */
+    @media (prefers-color-scheme: dark) {
+        body, .product-card, .action-btn, .social-btn {
+            background-color: #ffffff;
+            color: #000000;
+            border-color: #333;
+        }
+
+        .btn-outline-dark {
+            color: #000000;
+            border-color: #555;
+        }
+        .btn-outline-dark:hover {
+            background-color: #333;
+            color: #000000;
+            border-color: #333;
+        }
+
+        .product-actions {
+            background: transparent;
+        }
+
+    /* Адаптивность */
+    @media (max-width: 768px) {
+        .product-image-wrapper {
+            height: 150px;
+        }
+    }
+</style>
+
+<!-- CSRF token для JS -->
+<input type="hidden" id="csrf-token" value="{{ csrf_token }}">
+
+<!-- Каталог товаров -->
+<div class="container mt-5">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        {% for product in products %}
+        <div class="col">
+            <div class="product-card">
+                <div class="product-image-wrapper">
+                    <div class="product-actions">
+                        <button class="action-btn wishlist-btn{% if product in wishlist_products %} active{% endif %}" data-product-id="{{ product.id }}" aria-label="Избранное">
+                            <i class="{% if product in wishlist_products %}fas{% else %}far{% endif %} fa-heart"></i>
+                        </button>
+                        <button class="action-btn compare-btn" data-product-id="{{ product.id }}" aria-label="Сравнить">
+                            <i class="fas fa-exchange-alt"></i>
+                        </button>
+                    </div>
+
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" class="product-img" alt="{{ product.name }}">
+                    {% else %}
+                    <img src="{% static 'images/default-product.png' %}" class="product-img" alt="Нет изображения">
+                    {% endif %}
+                </div>
+                <div class="product-body">
+                    <div>
+                        <h5 class="product-title" title="{{ product.name }}">{{ product.name }}</h5>
+                        <p class="product-price">{{ product.price }} ₽</p>
+                    </div>
+                    {% if product.slug %}
+                        <a href="{% url 'products:product_detail' product.slug %}" class="btn btn-outline-dark w-100 mt-3">
+                            Подробнее
+                        </a>
+                    {% else %}
+                        <span class="btn btn-outline-secondary w-100 mt-3 disabled" tabindex="-1" aria-disabled="true">
+                            Подробнее (недоступно)
+                        </span>
+                    {% endif %}
+
+                    <div class="mt-3 d-flex justify-content-center gap-2">
+                        <!-- VK -->
+                        {% if product.slug %}
+                        <a href="https://vk.com/share.php?url={{ request.build_absolute_uri }}{% url 'products:product_detail' product.slug %}&title={{ product.name }}" target="_blank" class="social-btn" title="Поделиться в ВКонтакте" rel="noopener noreferrer">
+                            <i class="fab fa-vk"></i>
+                        </a>
+                        {% else %}
+                        <button class="social-btn" title="Поделиться недоступно" disabled aria-disabled="true">
+                            <i class="fab fa-vk"></i>
+                        </button>
+                        {% endif %}
+
+                        <!-- Telegram -->
+                        {% if product.slug %}
+                        <a href="https://t.me/share/url?url={{ request.build_absolute_uri }}{% url 'products:product_detail' product.slug %}&text={{ product.name }}" target="_blank" class="social-btn" title="Поделиться в Telegram" rel="noopener noreferrer">
+                            <i class="fab fa-telegram-plane"></i>
+                        </a>
+                        {% else %}
+                        <button class="social-btn" title="Поделиться недоступно" disabled aria-disabled="true">
+                            <i class="fab fa-telegram-plane"></i>
+                        </button>
+                        {% endif %}
+
+                        <!-- WhatsApp -->
+                        {% if product.slug %}
+                        <a href="https://wa.me/?text={{ product.name|urlencode }}%20{{ request.build_absolute_uri }}{% url 'products:product_detail' product.slug %}" target="_blank" class="social-btn" title="Поделиться в WhatsApp" rel="noopener noreferrer">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        {% else %}
+                        <button class="social-btn" title="Поделиться недоступно" disabled aria-disabled="true">
+                            <i class="fab fa-whatsapp"></i>
+                        </button>
+                        {% endif %}
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="text-center py-5">
+                <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                <h5>Товары не найдены</h5>
+                <p class="text-muted">Попробуйте изменить параметры поиска</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Пагинация -->
+{% if is_paginated %}
+<nav aria-label="Page navigation" class="my-5">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
+        </li>
+        {% endif %}
+
+        {% for num in paginator.page_range %}
+        {% if page_obj.number == num %}
+        <li class="page-item active" aria-current="page">
+            <span class="page-link">{{ num }}</span>
+        </li>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+        </li>
+        {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const csrfToken = document.getElementById("csrf-token").value;
+
+    // Обработка кнопок избранного
+    document.querySelectorAll(".wishlist-btn").forEach(button => {
+        button.addEventListener("click", function () {
+            const btn = this;
+            const productId = btn.getAttribute("data-product-id");
+            const icon = btn.querySelector("i");
+
+            fetch(`{% url 'products:add_to_wishlist' 0 %}`.replace('0', productId), {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": csrfToken,
+                    "Content-Type": "application/json",
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "added") {
+                    btn.classList.add('active');
+                    icon.classList.replace("far", "fas");
+                    icon.style.color = "var(--bs-danger)";
+                } else if (data.status === 'removed') {
+                    btn.classList.remove('active');
+                    icon.classList.replace("fas", "far");
+                    icon.style.color = "";
+                }
+            })
+            .catch(error => {
+                console.error("Ошибка:", error);
+                alert("Произошла ошибка при обновлении избранного");
+            });
+        });
+    });
+
+    // Обработка кнопок сравнения
+    document.querySelectorAll(".compare-btn").forEach(button => {
+        button.addEventListener("click", function () {
+            const productId = this.getAttribute("data-product-id");
+
+            fetch(`{% url 'products:compare_add' 0 %}`.replace('0', productId), {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": csrfToken,
+                    "Content-Type": "application/json",
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.status === "added") {
+                    alert("Товар добавлен в сравнение");
+                } else if(data.status === "exists") {
+                    alert("Этот товар уже в списке сравнения");
+                } else if(data.status === "limit") {
+                    alert("Максимальное количество товаров для сравнения - 4");
+                } else if(data.status === "removed") {
+                    alert("Товар удалён из сравнения");
+                } else {
+                    alert("Неизвестный ответ сервера");
+                }
+            })
+            .catch(error => {
+                console.error("Ошибка:", error);
+                alert("Произошла ошибка при добавлении в сравнение");
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

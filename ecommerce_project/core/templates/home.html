@@ -1,0 +1,611 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Главная | Обувь{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
+<style>
+    :root {
+        --black: #000000;
+        --white: #ffffff;
+        --gray-light: #f8f9fa;
+        --gray-medium: #e9ecef;
+        --gray-dark: #6c757d;
+    }
+
+    /* Темная тема */
+    .dark-mode {
+        background-color: #121212;
+        color: #e0e0e0;
+    }
+
+    .dark-mode .section-title,
+    .dark-mode .product-name,
+    .dark-mode .product-price {
+        color: #ffffff;
+    }
+
+    .dark-mode .section-title::after {
+        background-color: #ffffff;
+    }
+
+    .dark-mode .product-card {
+        background-color: #1e1e1e;
+        border-color: #333333;
+    }
+
+    .dark-mode .search-container {
+        background-color: #1e1e1e;
+    }
+
+    .dark-mode .search-input,
+    .dark-mode .form-select {
+        background-color: #2d2d2d;
+        border-color: #444;
+        color: #fff;
+    }
+
+    .dark-mode .recommended-section {
+        background-color: #1a1a1a;
+    }
+
+    .dark-mode .features-section {
+        background-color: #000;
+    }
+
+    /* Главный баннер */
+    .hero-banner {
+        background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('{% static 'media/banner-shoes.jpg' %}');
+        background-size: cover;
+        background-position: center;
+        color: var(--white);
+        padding: 120px 0;
+        text-align: center;
+        position: relative;
+        margin-bottom: 30px;
+    }
+
+    .hero-title {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .hero-subtitle {
+        font-size: 1.3rem;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+    }
+
+    .hero-btn {
+        background-color: var(--white);
+        color: var(--black);
+        font-weight: 600;
+        padding: 12px 30px;
+        border-radius: 30px;
+        border: 2px solid var(--white);
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .hero-btn:hover {
+        background-color: transparent;
+        color: var(--white);
+    }
+
+    /* Секции */
+    .section-title {
+        font-size: 2rem;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 30px;
+        color: var(--black);
+        position: relative;
+        padding-bottom: 10px;
+        text-transform: uppercase;
+    }
+
+    .section-title::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 2px;
+        background-color: var(--black);
+    }
+
+    /* Карточки товаров */
+    .product-card {
+        border: 1px solid var(--gray-medium);
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        margin-bottom: 20px;
+        background-color: var(--white);
+        overflow: hidden;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: #ff5252;
+        color: var(--white);
+        padding: 5px 10px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        border-radius: 4px;
+        z-index: 1;
+    }
+
+    .product-img-container {
+        position: relative;
+        overflow: hidden;
+        height: 220px;
+    }
+
+    .product-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .product-card:hover .product-img {
+        transform: scale(1.05);
+    }
+
+    .product-name {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--black);
+        margin-bottom: 8px;
+    }
+
+    .product-price {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--black);
+        margin-bottom: 12px;
+    }
+
+    .add-to-cart {
+        background-color: var(--black);
+        color: var(--white);
+        border: none;
+        padding: 8px 15px;
+        border-radius: 4px;
+        font-weight: 600;
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+
+    .add-to-cart:hover {
+        background-color: #333;
+    }
+
+    /* Баннеры акций */
+    .promo-slide {
+        height: 350px;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .promo-content {
+        position: absolute;
+        bottom: 40px;
+        left: 40px;
+        max-width: 450px;
+        color: var(--white);
+        background: rgba(0, 0, 0, 0.6);
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    .promo-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .promo-btn {
+        color: var(--white);
+        font-weight: 600;
+        padding: 8px 20px;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+        border: 2px solid var(--white);
+    }
+
+    .promo-btn:hover {
+        background-color: transparent;
+        color: var(--white);
+    }
+
+    /* Рекомендуемые товары */
+    .recommended-section {
+        padding: 50px 0;
+    }
+
+    /* Преимущества */
+    .features-section {
+        background-color: var(--black);
+        color: var(--white);
+        padding: 50px 0;
+        margin-top: 30px;
+    }
+
+    .feature-box {
+        text-align: center;
+        padding: 20px;
+    }
+
+    .feature-icon {
+        font-size: 2rem;
+        margin-bottom: 15px;
+        color: var(--white);
+    }
+
+    .feature-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    /* Новый блок - категории */
+    .categories-section {
+        padding: 20px 0 30px;
+    }
+
+    .popular-section {
+        padding: 20px 0 30px;
+    }
+
+    .recommended-section {
+        padding: 30px 0;
+    }
+
+    .features-section {
+        padding: 50px 0 70px;
+    }
+
+    /* Улучшенные карточки товаров */
+    .product-card-body {
+        padding: 15px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .product-price {
+        margin-top: auto;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--black);
+    }
+
+    /* Преимущества */
+    .feature-box {
+        text-align: center;
+        padding: 15px;
+        height: 100%;
+    }
+
+    .feature-icon {
+        font-size: 2rem;
+        margin-bottom: 15px;
+        color: var(--white);
+    }
+
+    .feature-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    /* Популярные модели - стили для swiper */
+    .popular-section .swiper {
+        padding-bottom: 40px; /* для пагинации */
+    }
+    .popular-section .swiper-slide {
+        width: 250px;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: stretch;
+    }
+    .popular-section .product-card {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    .popular-section .swiper-button-prev,
+    .popular-section .swiper-button-next {
+        color: var(--black);
+    }
+    .swiper-wrapper {
+    height: auto !important;
+    }
+    /* Адаптивность */
+    @media (max-width: 768px) {
+        .categories-section,
+        .popular-section,
+        .recommended-section {
+            padding: 20px 0;
+        }
+
+        .features-section {
+            padding: 30px 0 50px;
+        }
+
+        .price-range {
+            margin-top: 10px;
+        }
+        .popular-section .swiper-slide {
+            width: 80vw;
+        }
+    }
+
+    /* Стили для диапазона цен */
+    .price-range-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    /* Немного коррекции для price inputs */
+    .price-range-container input[type="number"] {
+        max-width: 100px;
+    }
+</style>
+
+
+<!-- Главный баннер -->
+<section class="promo-section mb-3">
+    <div class="container">
+        <div class="swiper" id="promoSwiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide promo-slide" style="background-image: url('{% static 'media/promo1-shoes.jpg' %}');">
+                    <div class="promo-content">
+                        <h3 class="promo-title">Скидки до 50%</h3>
+                        <p class="promo-text">На осеннюю коллекцию только до конца месяца</p>
+                        <a href="{% url 'core:discount' %}" class="btn promo-btn">Подробнее</a>
+                    </div>
+                </div>
+
+                <div class="swiper-slide promo-slide" style="background-image: url('{% static 'media/promo2-shoes.jpg' %}');">
+                    <div class="promo-content">
+                        <h3 class="promo-title">Новая коллекция</h3>
+                        <p class="promo-text">Свежие тренды этого сезона уже в продаже</p>
+                        <a href="{% url 'products:category' 'new-arrivals' %}" class="btn promo-btn">Смотреть</a>
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
+</section>
+
+<!-- Популярные товары с слайдером -->
+<section class="popular-section">
+    <div class="container">
+        <h2 class="section-title">Популярные модели</h2>
+
+        <div class="swiper popular-swiper">
+            <div class="swiper-wrapper">
+                {% for product in popular_products %}
+                <div class="swiper-slide">
+                    <div class="card product-card">
+                        {% if product.rating >= 4.5 %}
+                        <span class="product-badge">Хит</span>
+                        {% endif %}
+
+                        <div class="product-img-container">
+                            <img src="{{ product.images.first.image.url }}" class="product-img" alt="{{ product.name }}">
+                        </div>
+
+                        <div class="product-card-body">
+                            <h5 class="product-name">{{ product.name }}</h5>
+                            <p class="product-price">{{ product.price }} ₽</p>
+
+                            <form action="{% url 'orders:add_to_cart' product.id %}" method="post" class="mt-2">
+                                {% csrf_token %}
+                                <input type="hidden" name="size" value="{{ selected_size }}">
+                                <button type="submit" class="btn add-to-cart">Подробнее</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Навигация -->
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+
+            <!-- Пагинация -->
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
+</section>
+
+<!-- Поиск по сайту -->
+<section class="search-section mb-4">
+    <div class="container">
+        <div class="search-container p-4 rounded">
+            <h3 class="text-center mb-3">Найти свою идеальную пару</h3>
+            <form action="{% url 'products:search_results' %}" method="get" class="row g-2">
+                <div class="col-md-5">
+                    <input type="text" name="q" class="form-control search-input" placeholder="Название обуви" value="{{ request.GET.q|default:'' }}">
+                </div>
+                <div class="col-md-3">
+                    <select name="category" class="form-select search-input">
+                        <option value="">Все категории</option>
+                        {% for category in categories %}
+                        <option value="{{ category.slug }}" {% if request.GET.category == category.slug %}selected{% endif %}>{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <div class="price-range-container">
+                        <input type="number" name="min_price" class="form-control search-input" placeholder="От" min="0" step="1" value="{{ request.GET.min_price|default_if_none:'' }}">
+                        <span>-</span>
+                        <input type="number" name="max_price" class="form-control search-input" placeholder="До" min="0" step="1" value="{{ request.GET.max_price|default_if_none:'' }}">
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <button type="submit" class="btn btn-dark w-100">Поиск</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Рекомендуем вам -->
+<section class="recommended-section">
+    <div class="container">
+        <h2 class="section-title">Рекомендуем вам</h2>
+
+        <div class="row">
+            {% for product in recommended_products %}
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="card product-card">
+                    <div class="product-img-container">
+                        <img src="{{ product.images.first.image.url }}" class="product-img" alt="{{ product.name }}">
+                    </div>
+
+                    <div class="product-card-body">
+                        <h5 class="product-name">{{ product.name }}</h5>
+                        <p class="product-price">{{ product.price }} ₽</p>
+
+                        <form action="{% url 'orders:add_to_cart' product.id %}" method="post" class="mt-2">
+                            {% csrf_token %}
+                            <input type="hidden" name="size" value="{{ selected_size }}">
+                            <button type="submit" class="btn add-to-cart">Подробнее</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Преимущества -->
+<section class="features-section mb-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 col-sm-6 mb-4">
+                <div class="feature-box">
+                    <i class="fas fa-truck feature-icon"></i>
+                    <h4 class="feature-title">Быстрая доставка</h4>
+                    <p class="mb-0">Доставка по всей России за 2-5 дней</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-4">
+                <div class="feature-box">
+                    <i class="fas fa-undo feature-icon"></i>
+                    <h4 class="feature-title">Легкий возврат</h4>
+                    <p class="mb-0">Возврат в течение 14 дней без вопросов</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-4">
+                <div class="feature-box">
+                    <i class="fas fa-lock feature-icon"></i>
+                    <h4 class="feature-title">Безопасная оплата</h4>
+                    <p class="mb-0">Различные способы безопасной оплаты</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-4">
+                <div class="feature-box">
+                    <i class="fas fa-headset feature-icon"></i>
+                    <h4 class="feature-title">Поддержка 24/7</h4>
+                    <p class="mb-0">Круглосуточная поддержка клиентов</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Слайдер акций
+        var promoSlider = new Swiper('#promoSwiper', {
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false,
+            },
+            loop: true,
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            effect: 'fade',
+            fadeEffect: { crossFade: true },
+        });
+
+        // Слайдер популярных моделей
+        var popularSwiper = new Swiper('.popular-swiper', {
+            slidesPerView: 4,
+            spaceBetween: 20,
+            loop: true,
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            breakpoints: {
+                320: { slidesPerView: 1, spaceBetween: 10 },
+                576: { slidesPerView: 2, spaceBetween: 15 },
+                768: { slidesPerView: 3, spaceBetween: 20 },
+                992: { slidesPerView: 4, spaceBetween: 20 },
+            }
+        });
+
+        // Плавное появление элементов при скролле
+        const animateOnScroll = () => {
+            const elements = document.querySelectorAll('.product-card, .category-card, .feature-box');
+
+            elements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                const screenPosition = window.innerHeight / 1.2;
+
+                if(elementPosition < screenPosition) {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }
+            });
+        };
+
+        // Начальные стили анимации
+        document.querySelectorAll('.product-card, .category-card, .feature-box').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        });
+
+        window.addEventListener('load', animateOnScroll);
+        window.addEventListener('scroll', animateOnScroll);
+    });
+</script>
+
+{% endblock %}

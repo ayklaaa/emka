@@ -1,0 +1,345 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Контакты | Обувь{% endblock %}
+
+{% block content %}
+<div class="contact-page">
+    <style>
+    /* Основные стили (как в оригинале) */
+    body {
+        background-color: #f8f9fa;
+        color: #212529;
+    }
+
+    .hero-section {
+        background: #000;
+        border-radius: 0 0 20px 20px;
+    }
+
+    .contact-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        padding: 10px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .contact-item:hover {
+        background-color: rgba(0,0,0,0.05);
+        transform: translateY(-5px);
+    }
+
+    .contact-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+        background-color: #000;
+        color: white;
+    }
+
+    .map-container {
+        overflow: hidden;
+        border-radius: 0 0 10px 10px;
+    }
+
+    .contact-page {
+        padding-bottom: 50px;
+    }
+
+    .form-control {
+        padding: 12px 15px;
+        border-radius: 8px;
+        border: 1px solid #ced4da;
+        background-color: white;
+        color: #212529;
+        transition: all 0.3s;
+    }
+
+    .form-control:focus {
+        border-color: #000;
+        box-shadow: 0 0 0 0.25rem rgba(0, 0, 0, 0.25);
+    }
+
+    .btn-dark {
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        transition: all 0.3s;
+        background-color: #000;
+        border-color: #000;
+    }
+
+    .btn-dark:hover {
+        transform: translateY(-2px);
+        background-color: #333;
+        border-color: #333;
+    }
+
+    .card {
+        background-color: white;
+        border: none;
+    }
+
+    .card-header {
+        background-color: #000;
+        color: white;
+        border-bottom: none;
+    }
+
+    .bg-light {
+        background-color: #f8f9fa !important;
+    }
+
+    /* Контактная информация - всегда светлый текст на темном фоне */
+    .contact-info-container {
+        background-color: #000000;
+        color: #ffffff;
+    }
+
+    /* Форма обратной связи - всегда светлый текст на темном фоне */
+    .feedback-form-container {
+        background-color: #000000;
+        color: #ffffff;
+    }
+    /* Анимации */
+    .animate-fade {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeIn 0.8s ease forwards;
+    }
+
+    .animate-up {
+        opacity: 0;
+        transform: translateY(30px);
+        animation: fadeUp 1s ease forwards;
+    }
+
+    @keyframes fadeIn {
+        to {
+            opacity: 1;
+            transform: none;
+        }
+    }
+
+    @keyframes fadeUp {
+        to {
+            opacity: 1;
+            transform: none;
+        }
+    }
+
+    /* Темная тема */
+    body.dark-theme {
+        background-color: #121212;
+        color: #e0e0e0;
+    }
+
+    body.dark-theme .hero-section {
+        background: #1a1a1a;
+    }
+
+    body.dark-theme .contact-item:hover {
+        background-color: rgba(255,255,255,0.05);
+    }
+
+    /* В темной теме меняем ТОЛЬКО формы */
+    body.dark-theme .contact-info-container {
+        background-color: #2d2d2d;
+        color: #e0e0e0;
+    }
+
+    body.dark-theme .feedback-form-container {
+        background-color: #2d2d2d;
+        color: #e0e0e0;
+    }
+
+    body.dark-theme .form-control {
+        background-color: #3d3d3d;
+        color: #e0e0e0;
+        border-color: #444;
+    }
+
+    body.dark-theme .form-control:focus {
+        border-color: #666;
+        box-shadow: 0 0 0 0.25rem rgba(100, 100, 100, 0.25);
+    }
+
+    /* Адаптивность */
+    @media (max-width: 992px) {
+        .contact-item {
+            padding: 12px;
+        }
+
+        .hero-section {
+            padding: 30px 0;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .contact-item {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .contact-icon {
+            margin-bottom: 10px;
+        }
+
+        .hero-section h1 {
+            font-size: 2rem;
+        }
+
+        .hero-section p {
+            font-size: 1rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .contact-page {
+            padding-bottom: 30px;
+        }
+
+        .card {
+            border-radius: 0;
+        }
+
+        .map-container iframe {
+            height: 300px;
+        }
+    }
+</style>
+    <!-- Hero Section -->
+    <div class="hero-section text-white text-center py-5 mb-5">
+        <div class="container">
+            <h1 class="display-4 fw-bold mb-3 animate-fade">Наши контакты</h1>
+            <p class="lead animate-fade" style="animation-delay: 0.2s;">Свяжитесь с нами по любым вопросам — мы всегда рады вам!</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <!-- Контактная информация -->
+            <div class="col-lg-6 mb-5">
+                <div class="card h-100 border-0 shadow-sm animate-up">
+                    <div class="card-header bg-dark text-white">
+                        <h2 class="mb-0"><i class="fas fa-info-circle me-2"></i>Контактная информация</h2>
+                    </div>
+                    <div class="card-body contact-info-container">
+                        <div class="contact-item mb-4">
+                            <div class="contact-icon bg-dark text-white">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div>
+                                <h5>Адрес</h5>
+                                <p>Забайкальский край, Карымский район,<br>пгт. Дарасун, ул. Калинина, д. 1А</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-item mb-4">
+                            <div class="contact-icon bg-dark text-white">
+                                <i class="fas fa-phone-alt"></i>
+                            </div>
+                            <div>
+                                <h5>Телефон</h5>
+                                <p>+7 (924) 276-92-58</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-item mb-4">
+                            <div class="contact-icon bg-dark text-white">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div>
+                                <h5>Email</h5>
+                                <p>magazine-shop@mail.ru</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-item">
+                            <div class="contact-icon bg-dark text-white">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div>
+                                <h5>График работы</h5>
+                                <p>Пн-Пт: 10:00 - 20:00<br>Сб-Вс: 10:00 - 18:00</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-item mt-4">
+                            <div class="contact-icon bg-dark text-white">
+                                <i class="fas fa-shoe-prints"></i>
+                            </div>
+                            <div>
+                                <h5>Юридическая информация</h5>
+                                <p>ИП Саубанова Э.В.<br>"Магазин обуви"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Форма обратной связи -->
+            <div class="col-lg-6 mb-5">
+                <div class="card h-100 border-0 shadow-sm animate-up" style="animation-delay: 0.2s;">
+                    <div class="card-header bg-dark text-white">
+                        <h2 class="mb-0"><i class="fas fa-comment-alt me-2"></i>Форма обратной связи</h2>
+                    </div>
+                    <div class="card-body feedback-form-container">
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="mb-4">
+                                <label class="form-label">Ваше имя *</label>
+                                <input type="text" name="name" class="form-control" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Email *</label>
+                                <input type="email" name="email" class="form-control" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Тема сообщения</label>
+                                <input type="text" name="subject" class="form-control">
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Сообщение *</label>
+                                <textarea name="message" class="form-control" rows="5" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-dark w-100 py-2">
+                                <i class="fas fa-paper-plane me-2"></i>Отправить сообщение
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карта -->
+        <div class="card mb-5 border-0 shadow-sm animate-up" style="animation-delay: 0.4s;">
+            <div class="card-header bg-dark text-white">
+                <h2 class="mb-0"><i class="fas fa-map-marked-alt me-2"></i>Мы на карте</h2>
+            </div>
+            <div class="card-body p-0">
+                <div class="map-container">
+                    <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3A6e2fb3041d4a8e07d0c289dc2cf1d47627cc413e2325ca3077ec688ba76a2155&amp;source=constructor" width="100%" height="400" frameborder="0"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

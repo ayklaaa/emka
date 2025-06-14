@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h2>Заказ №{{ order.id }} принят в обработку</h2>
+
+    <p>Здравствуйте, {{ order.first_name }}!</p>
+
+    <p>Ваш заказ №{{ order.id }} на сумму <strong>{{ order.total_price }} ₽</strong> успешно оформлен.</p>
+
+    <h3>Детали заказа:</h3>
+    <ul>
+        <li>Адрес доставки: {{ order.address }}</li>
+        <li>Способ оплаты: {{ order.get_payment_method_display }}</li>
+        <li>Телефон для связи: {{ order.phone }}</li>
+    </ul>
+
+    <p>Спасибо за покупку!</p>
+</body>
+</html>

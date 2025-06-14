@@ -1,0 +1,319 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{% if article %}Редактирование{% else %}Создание{% endif %} статьи | Обувь{% endblock %}
+
+{% block content %}
+<style>
+    .article-form-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 40px 25px;
+        background-color: var(--bs-body-bg, #fff);
+        border-radius: 16px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+        transition: background-color 0.3s ease, color 0.3s ease;
+        color: var(--bs-body-color, #333);
+    }
+
+    .form-header h1 {
+        font-size: 2rem;
+        font-weight: 600;
+        margin-bottom: 25px;
+        text-align: center;
+        color: var(--bs-body-color, #222);
+        border-bottom: 2px solid var(--bs-body-color, #222);
+        padding-bottom: 10px;
+    }
+
+    .form-group {
+        margin-bottom: 24px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--bs-body-color, #333);
+    }
+
+    /* Универсальные стили для инпутов, textarea и ckeditor виджета */
+    input[type="text"],
+    input[type="file"],
+    textarea,
+    .cke {
+        width: 100%;
+        padding: 14px 18px;
+        border: 1px solid var(--bs-border-color, #d1d1d1);
+        border-radius: 10px;
+        font-size: 1rem;
+        background-color: var(--bs-body-tertiary, #fdfdfd);
+        color: var(--bs-body-color, #333);
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+        font-family: inherit;
+    }
+
+    /* Минимальная высота для textarea и редактора */
+    textarea {
+        min-height: 220px;
+        resize: vertical;
+    }
+    .cke_contents {
+        min-height: 220px !important;
+    }
+
+    /* Фокус */
+    input[type="text"]:focus,
+    textarea:focus,
+    .cke_focus .cke_contents {
+        border-color: var(--bs-body-color, #000);
+        outline: none;
+        background-color: var(--bs-body-bg, #fff);
+        box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Кнопки */
+    .btn-group {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-top: 35px;
+    }
+
+    .submit-btn,
+    .cancel-btn {
+        padding: 13px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        user-select: none;
+        text-decoration: none;
+        border: 1.8px solid var(--bs-body-color, #000);
+        color: var(--bs-body-color, #000);
+        background-color: transparent;
+    }
+
+    .submit-btn {
+        background-color: var(--bs-body-color, #000);
+        color: var(--bs-body-bg, #fff);
+        border-color: var(--bs-body-color, #000);
+    }
+
+    .submit-btn:hover,
+    .submit-btn:focus {
+        background-color: var(--bs-body-dark, #222);
+        border-color: var(--bs-body-dark, #222);
+        color: var(--bs-body-bg, #fff);
+        transform: translateY(-2px);
+        outline: none;
+        text-decoration: none;
+    }
+
+    .cancel-btn:hover,
+    .cancel-btn:focus {
+        background-color: var(--bs-body-tertiary, #f0f0f0);
+        border-color: var(--bs-body-color, #000);
+        transform: translateY(-2px);
+        color: var(--bs-body-color, #000);
+        outline: none;
+    }
+
+    .current-image {
+        margin-top: 8px;
+        font-size: 0.9rem;
+        color: var(--bs-secondary-text, #666);
+    }
+
+    .current-image a {
+        color: var(--bs-body-color, #000);
+        text-decoration: underline;
+    }
+
+    .current-image a:hover,
+    .current-image a:focus {
+        color: var(--bs-body-color, #222);
+        outline: none;
+    }
+
+    /* Тёмная тема */
+    body.dark-theme {
+        background-color: #1e1e1e;
+        color: #e0e0e0;
+    }
+
+    body.dark-theme .article-form-container {
+        background-color: #262626;
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.7);
+        color: #e0e0e0;
+    }
+
+    body.dark-theme .form-header h1 {
+        color: #eee;
+        border-color: #eee;
+    }
+
+    body.dark-theme label {
+        color: #ccc;
+    }
+
+    body.dark-theme input[type="text"],
+    body.dark-theme input[type="file"],
+    body.dark-theme textarea,
+    body.dark-theme .cke {
+        background-color: #2c2c2c;
+        border-color: #555;
+        color: #f1f1f1;
+    }
+
+    body.dark-theme input[type="text"]::placeholder,
+    body.dark-theme textarea::placeholder {
+        color: #888;
+    }
+
+    body.dark-theme input[type="text"]:focus,
+    body.dark-theme textarea:focus,
+    body.dark-theme .cke_focus .cke_contents {
+        border-color: #888;
+        box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.1);
+    }
+
+    body.dark-theme .submit-btn {
+        background-color: #444;
+        color: #fefefe;
+        border-color: #eee;
+    }
+    body.dark-theme .submit-btn:hover,
+    body.dark-theme .submit-btn:focus {
+        background-color: #555;
+        border-color: #fff;
+        color: #fff;
+    }
+
+    body.dark-theme .cancel-btn {
+        color: #ccc;
+        border-color: #666;
+        background-color: transparent;
+    }
+    body.dark-theme .cancel-btn:hover,
+    body.dark-theme .cancel-btn:focus {
+        background-color: #2a2a2a;
+        color: #ddd;
+        border-color: #aaa;
+    }
+
+    body.dark-theme .current-image {
+        color: #aaa;
+    }
+    body.dark-theme .current-image a {
+        color: #bbb;
+    }
+
+    body.dark-theme .current-image a:hover,
+    body.dark-theme .current-image a:focus {
+        color: #eee;
+    }
+
+    /* Адаптивность */
+    @media (max-width: 768px) {
+        .article-form-container {
+            padding: 30px 20px;
+        }
+        .form-header h1 {
+            font-size: 1.8rem;
+        }
+        .submit-btn,
+        .cancel-btn {
+            width: 100%;
+            justify-content: center;
+            padding: 12px 0;
+            font-size: 1rem;
+        }
+        .btn-group {
+            flex-direction: column;
+            gap: 14px;
+        }
+    }
+</style>
+
+<div class="article-form-container animate-up" role="main" aria-labelledby="form-title">
+    <div class="form-header">
+        <h1 id="form-title" tabindex="-1">{% if article %}Редактирование статьи{% else %}Новая статья{% endif %}</h1>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="{{ form.title.id_for_label }}">Заголовок</label>
+            {{ form.title.errors }}
+            {{ form.title }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.image.id_for_label }}">Изображение</label>
+            {{ form.image.errors }}
+            {{ form.image }}
+            {% if article and article.image %}
+            <div class="current-image">
+                Текущее изображение:
+                <a href="{{ article.image.url }}" target="_blank" rel="noopener">{{ article.image.name }}</a>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.content.id_for_label }}">Содержание</label>
+            {{ form.content.errors }}
+            {{ form.content }}
+        </div>
+
+        <div class="btn-group">
+            <button type="submit" class="submit-btn" aria-label="{% if article %}Сохранить изменения статьи{% else %}Создать новую статью{% endif %}">
+                <i class="fas fa-save" aria-hidden="true"></i> Сохранить
+            </button>
+            <a href="{% url 'blog:blog' %}" class="cancel-btn" role="link" aria-label="Отмена и возврат к списку статей">
+                <i class="fas fa-times" aria-hidden="true"></i> Отмена
+            </a>
+        </div>
+                {% if form.errors %}
+        <div class="alert alert-danger">
+            <strong>Ошибки:</strong>
+            <ul>
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}
+                    <li>{{ field }}: {{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+            </ul>
+        </div>
+{% endif %}
+    </form>
+</div>
+
+<script src="https://cdn.ckeditor.com/4.22.1/standard-all/ckeditor.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof CKEDITOR !== 'undefined') {
+        CKEDITOR.replace('{{ form.content.auto_id }}', {
+            height: 250,
+            removePlugins: 'elementspath',
+            resize_enabled: false,
+            extraPlugins: 'uploadimage,image2',
+            filebrowserUploadUrl: '/ckeditor/upload/',
+            filebrowserUploadMethod: 'form'
+        });
+    } else {
+        console.error('CKEditor не загружен!');
+    }
+});
+</script>
+{% endblock %}

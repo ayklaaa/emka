@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Заказ #{{ order.id }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Заголовок с кнопкой назад -->
+    <div class="d-flex align-items-center mb-4">
+        <a href="{% url 'orders:my_orders' %}" class="btn btn-outline-secondary me-3">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <h1 class="h3 mb-0 text-purple">Заказ #{{ order.id }}</h1>
+        <span class="badge bg-light text-dark ms-auto">
+            {{ order.created_at|date:"d.m.Y H:i" }}
+        </span>
+    </div>
+
+    <!-- Карточки с информацией -->
+    <div class="row g-4 mb-4">
+        <!-- Информация о заказе -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-purple text-white">
+                    <h5 class="mb-0">Информация о заказе</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Статус:</span>
+                            <span class="badge bg-{{ order.get_status_color }}">
+                                {{ order.get_status_display }}
+                            </span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Способ оплаты:</span>
+                            <span>{{ order.get_payment_method_display }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Доставка:</span>
+                            <span>{{ order.get_delivery_method_display }}</span>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="fw-bold mb-2">Адрес доставки:</div>
+                            {{ order.address }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Контактная информация -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-purple text-white">
+                    <h5 class="mb-0">Контактная информация</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Имя:</span>
+                            <span>{{ order.first_name }} {{ order.last_name }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Телефон:</span>
+                            <span>{{ order.phone }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Email:</span>
+                            <span>{{ order.email }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Товары в заказе -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-purple text-white">
+            <h5 class="mb-0">Состав заказа</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 80px" class="ps-4">Фото</th>
+                            <th>Товар</th>
+                            <th class="text-end">Цена</th>
+                            <th class="text-center">Кол-во</th>
+                            <th class="text-end pe-4">Сумма</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                        <tr>
+                            <td class="ps-4">
+                                {% if item.product.image %}
+                                <img src="{{ item.product.image.url }}"
+                                     alt="{{ item.product.name }}"
+                                     class="img-fluid rounded border"
+                                     width="60"
+                                     style="object-fit: cover; height: 60px;">
+                                {% else %}
+                                <div class="bg-light rounded d-flex align-items-center justify-content-center"
+                                     style="width: 60px; height: 60px;">
+                                    <i class="fas fa-image text-muted"></i>
+                                </div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="fw-bold">{{ item.product.name }}</div>
+                                {% if item.size %}
+                                <div class="text-muted small">Размер: {{ item.size }}</div>
+                                {% endif %}
+                            </td>
+                            <td class="text-end">{{ item.price }} ₽</td>
+                            <td class="text-center">{{ item.quantity }}</td>
+                            <td class="text-end pe-4">{{ item.total }} ₽</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot class="table-light">
+                        <tr>
+                            <td colspan="4" class="text-end fw-bold ps-4">Итого:</td>
+                            <td class="text-end fw-bold pe-4">{{ order.total_price }} ₽</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Кнопки действий -->
+    <div class="d-flex justify-content-between">
+        <a href="{% url 'orders:my_orders' %}" class="btn btn-outline-purple">
+            <i class="fas fa-arrow-left me-2"></i> К списку заказов
+        </a>
+
+        {% if order.status == 'new' or order.status == 'processing' %}
+        <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#cancelOrderModal">
+            <i class="fas fa-times-circle me-2"></i> Отменить заказ
+        </button>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Модальное окно отмены заказа -->
+<div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-purple text-white">
+                <h5 class="modal-title">Отмена заказа</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Вы уверены, что хотите отменить заказ #{{ order.id }}?</p>
+                <p class="text-muted">После отмены восстановить заказ будет невозможно.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Закрыть</button>
+                <a href="{% url 'orders:cancel_order' order.id %}" class="btn btn-danger">Подтвердить отмену</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-purple {
+        background-color: #000000;
+    }
+    .btn-outline-purple {
+        color: #000000;
+        border-color: #696969;
+    }
+    .btn-outline-purple:hover {
+        color: white;
+        background-color: #000000;
+    }
+    .text-purple {
+        color: #313131;
+    }
+    .table-hover tbody tr:hover {
+        background-color: rgba(111, 66, 193, 0.05);
+    }
+</style>
+{% endblock %}

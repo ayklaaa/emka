@@ -1,0 +1,12 @@
+Здравствуйте, {{ order.user.first_name }}!
+
+Ваш заказ №{{ order.id }} успешно оформлен.
+
+Детали заказа:
+{% for item in order.items.all %}
+- {{ item.product.name }} ({{ item.size }}) x{{ item.quantity }}
+{% endfor %}
+
+Сумма: {{ order.total_price }} руб.
+
+Спасибо за покупку!

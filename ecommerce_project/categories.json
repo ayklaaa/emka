@@ -1,0 +1,34 @@
+[
+  {
+    "model": "products.category",
+    "pk": 5,
+    "fields": {
+      "name": "Кроссовки",
+      "slug": "krossovki"
+    }
+  },
+  {
+    "model": "products.category",
+    "pk": 6,
+    "fields": {
+      "name": "лето",
+      "slug": "leto"
+    }
+  },
+  {
+    "model": "products.category",
+    "pk": 7,
+    "fields": {
+      "name": "кроссовки",
+      "slug": "krossovki"
+    }
+  },
+  {
+    "model": "products.category",
+    "pk": 8,
+    "fields": {
+      "name": "мужская обувь",
+      "slug": "muzhskaya-obuv"
+    }
+  }
+]

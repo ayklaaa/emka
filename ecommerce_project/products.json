@@ -1,0 +1,742 @@
+[
+{
+    "model": "products.product",
+    "pk": 2,
+    "fields": {
+      "name": "Кроссовки \"Спорт-Лайт\"",
+      "slug": "sport-light-sneakers",
+      "description": "Легкие женские кроссовки для бега и повседневной носки.",
+      "price": "3200.00",
+      "discounted_price": null,
+      "is_discounted": false,
+      "stock": 10,
+      "image": "products/freepik__the-style-is-candid-image-photography-with-natural__7839_NpsosBF.jpeg",
+      "category": 5,
+      "brand": "lele",
+      "rating": "0.0",
+      "seasonal_tag": "Лето",
+      "is_recommended": true,
+      "is_new": true,
+      "is_seasonal": true,
+      "is_popular": true,
+      "created_at": "2025-05-18T12:28:56.948Z",
+      "tags": [
+        4
+      ]
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 3,
+    "fields": {
+      "name": "Сапоги \"Зимняя сказка\"",
+      "slug": "winter-fairy-boots",
+      "description": "Теплые сапоги на меху для холодной зимы.",
+      "price": "6500.00",
+      "discounted_price": "6299.00",
+      "is_discounted": true,
+      "stock": 0,
+      "image": "products/зимняя_обувь.jpg",
+      "category": 5,
+      "brand": null,
+      "rating": "0.0",
+      "seasonal_tag": "зима",
+      "is_recommended": false,
+      "is_new": false,
+      "is_seasonal": false,
+      "is_popular": false,
+      "created_at": "2025-05-18T12:33:54.995Z",
+      "tags": [
+        6
+      ]
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 4,
+    "fields": {
+      "name": "Балетки \"Комфорт\"",
+      "slug": "comfort-ballet-flats",
+      "description": "Удобные балетки из мягкой кожи.",
+      "price": "2800.00",
+      "discounted_price": null,
+      "is_discounted": false,
+      "stock": 0,
+      "image": "products/балетки_3.jpg",
+      "category": 5,
+      "brand": null,
+      "rating": "0.0",
+      "seasonal_tag": "Лето",
+      "is_recommended": true,
+      "is_new": true,
+      "is_seasonal": true,
+      "is_popular": true,
+      "created_at": "2025-05-18T12:41:28.522Z",
+      "tags": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 6,
+    "fields": {
+      "name": "Ботфорты \"Грация\"",
+      "slug": "grace-thigh-boots",
+      "description": "Высокие сапоги на шпильке.",
+      "price": "7200.00",
+      "discounted_price": null,
+      "is_discounted": false,
+      "stock": 0,
+      "image": "products/ботфорты.jpg",
+      "category": 5,
+      "brand": null,
+      "rating": "0.0",
+      "seasonal_tag": "осень",
+      "is_recommended": false,
+      "is_new": false,
+      "is_seasonal": false,
+      "is_popular": true,
+      "created_at": "2025-05-18T12:45:12.781Z",
+      "tags": [
+        7
+      ]
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 7,
+    "fields": {
+      "name": "Сандалии \"Лето-2024\"",
+      "slug": "sandalii-leto-2024",
+      "description": "summer-2024-sandals",
+      "price": "2900.00",
+      "discounted_price": "2699.00",
+      "is_discounted": true,
+      "stock": 0,
+      "image": "products/сандалии.jpg",
+      "category": 5,
+      "brand": null,
+      "rating": "0.0",
+      "seasonal_tag": null,
+      "is_recommended": true,
+      "is_new": false,
+      "is_seasonal": true,
+      "is_popular": false,
+      "created_at": "2025-05-18T13:27:34.702Z",
+      "tags": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 8,
+    "fields": {
+      "name": "Туфли \"Офисный стиль\"",
+      "slug": "office-lady-shoes",
+      "description": "Классические туфли-лодочки.",
+      "price": "3800.00",
+      "discounted_price": null,
+      "is_discounted": false,
+      "stock": 0,
+      "image": "products/Лодочки.jpg",
+      "category": 5,
+      "brand": null,
+      "rating": "0.0",
+      "seasonal_tag": null,
+      "is_recommended": false,
+      "is_new": false,
+      "is_seasonal": false,
+      "is_popular": false,
+      "created_at": "2025-05-18T13:31:06.354Z",
+      "tags": []
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 9,
+    "fields": {
+      "name": "Угги \"Мягкие\"",
+      "slug": "cozy-ugg-boots",
+      "description": "Теплые угги из овчины.",
+      "price": "5000.00",
+      "discounted_price": "4999.00",
+      "is_discounted": true,
+      "stock": 0,
+      "image": "products/угги1.jpg",
+      "category": 5,
+      "brand": null,
+      "rating": "0.0",
+      "seasonal_tag": null,
+      "is_recommended": false,
+      "is_new": false,
+      "is_seasonal": false,
+      "is_popular": false,
+      "created_at": "2025-05-18T13:35:27.905Z",
+      "tags": [
+        7
+      ]
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 10,
+    "fields": {
+      "name": "Кеды \"Ретро\"",
+      "slug": "retro-canvas-sneakers",
+      "description": "Стильные кеды в винтажном стиле.",
+      "price": "2500.00",
+      "discounted_price": null,
+      "is_discounted": false,
+      "stock": 0,
+      "image": "products/кеды_винт2.jpg",
+      "category": 5,
+      "brand": null,
+      "rating": "0.0",
+      "seasonal_tag": "осень",
+      "is_recommended": true,
+      "is_new": true,
+      "is_seasonal": true,
+      "is_popular": true,
+      "created_at": "2025-05-18T13:40:16.016Z",
+      "tags": [
+        5
+      ]
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 11,
+    "fields": {
+      "name": "Сабо \"Домашние\"",
+      "slug": "home-sabots",
+      "description": "Удобные сабо для дома.",
+      "price": "1500.00",
+      "discounted_price": null,
+      "is_discounted": false,
+      "stock": 0,
+      "image": "products/сабо_дом.jpg",
+      "category": 5,
+      "brand": null,
+      "rating": "0.0",
+      "seasonal_tag": null,
+      "is_recommended": false,
+      "is_new": false,
+      "is_seasonal": false,
+      "is_popular": false,
+      "created_at": "2025-05-18T13:43:44.034Z",
+      "tags": []
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 12,
+    "fields": {
+      "name": "Ботильоны \"Гранд\"",
+      "slug": "grand-ankle-boots",
+      "description": "Стильные ботильоны на устойчивом каблуке.",
+      "price": "5200.00",
+      "discounted_price": null,
+      "is_discounted": false,
+      "stock": 0,
+      "image": "products/стиль_бот.jpg",
+      "category": 5,
+      "brand": null,
+      "rating": "0.0",
+      "seasonal_tag": null,
+      "is_recommended": false,
+      "is_new": false,
+      "is_seasonal": false,
+      "is_popular": false,
+      "created_at": "2025-05-18T13:46:18.819Z",
+      "tags": [
+        7
+      ]
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 13,
+    "fields": {
+      "name": "Эспадрильи \"Летний бриз\"",
+      "slug": "summer-breeze-espadrilles",
+      "description": "Легкие эспадрильи на текстильной подошве.",
+      "price": "2100.00",
+      "discounted_price": null,
+      "is_discounted": false,
+      "stock": 0,
+      "image": "products/эспадрильи1.jpg",
+      "category": 5,
+      "brand": null,
+      "rating": "0.0",
+      "seasonal_tag": null,
+      "is_recommended": true,
+      "is_new": false,
+      "is_seasonal": true,
+      "is_popular": false,
+      "created_at": "2025-05-18T13:50:38.499Z",
+      "tags": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 14,
+    "fields": {
+      "name": "Сапоги \"Снежная королева\"",
+      "slug": "snow-queen-boots",
+      "description": "Теплые сапоги на меху с высоким голенищем.",
+      "price": "7800.00",
+      "discounted_price": "6900.00",
+      "is_discounted": true,
+      "stock": 0,
+      "image": "products/Снежная_королева.jpg",
+      "category": 5,
+      "brand": null,
+      "rating": "0.0",
+      "seasonal_tag": "зима",
+      "is_recommended": false,
+      "is_new": false,
+      "is_seasonal": false,
+      "is_popular": false,
+      "created_at": "2025-05-18T13:53:56.542Z",
+      "tags": [
+        6
+      ]
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 15,
+    "fields": {
+      "name": "Слипоны \"Мини\"",
+      "slug": "mini-slip-ons",
+      "description": "Удобные слипоны для повседневной носки.",
+      "price": "1900.00",
+      "discounted_price": null,
+      "is_discounted": false,
+      "stock": 0,
+      "image": "products/слиппоны1.jpg",
+      "category": 5,
+      "brand": null,
+      "rating": "0.0",
+      "seasonal_tag": "Лето",
+      "is_recommended": false,
+      "is_new": false,
+      "is_seasonal": false,
+      "is_popular": false,
+      "created_at": "2025-05-18T13:56:12.333Z",
+      "tags": []
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 16,
+    "fields": {
+      "name": "Туфли \"Вечерние\"",
+      "slug": "evening-heels",
+      "description": "Элегантные туфли на шпильке для особых случаев.",
+      "price": "4900.00",
+      "discounted_price": null,
+      "is_discounted": false,
+      "stock": 0,
+      "image": "products/туфли_на_шпильке1.jpg",
+      "category": 5,
+      "brand": null,
+      "rating": "0.0",
+      "seasonal_tag": null,
+      "is_recommended": false,
+      "is_new": false,
+      "is_seasonal": false,
+      "is_popular": true,
+      "created_at": "2025-05-18T13:58:13.799Z",
+      "tags": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 17,
+    "fields": {
+      "name": "Мюли \"Комфорт+\"",
+      "slug": "comfort-mules",
+      "description": "Мягкие мюли с открытым носом.",
+      "price": "2600.00",
+      "discounted_price": null,
+      "is_discounted": false,
+      "stock": 0,
+      "image": "products/мюли.jpg",
+      "category": 5,
+      "brand": null,
+      "rating": "0.0",
+      "seasonal_tag": null,
+      "is_recommended": false,
+      "is_new": false,
+      "is_seasonal": false,
+      "is_popular": false,
+      "created_at": "2025-05-18T14:01:15.594Z",
+      "tags": []
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 18,
+    "fields": {
+      "name": "Босоножки \"Римские\"",
+      "slug": "roman-sandals",
+      "description": "Сандалии с переплетенными ремешками.",
+      "price": "3200.00",
+      "discounted_price": null,
+      "is_discounted": false,
+      "stock": 0,
+      "image": "products/сандалии_римские1.jpg",
+      "category": 5,
+      "brand": null,
+      "rating": "0.0",
+      "seasonal_tag": null,
+      "is_recommended": true,
+      "is_new": false,
+      "is_seasonal": true,
+      "is_popular": true,
+      "created_at": "2025-05-18T14:03:11.425Z",
+      "tags": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 19,
+    "fields": {
+      "name": "Кроссовки \"Ультра-Ран\"",
+      "slug": "ultra-run-sneakers",
+      "description": "Легкие кроссовки для бега.",
+      "price": "4000.00",
+      "discounted_price": null,
+      "is_discounted": false,
+      "stock": 250,
+      "image": "products/мужские_кросс_1.jpg",
+      "category": 8,
+      "brand": null,
+      "rating": "0.0",
+      "seasonal_tag": null,
+      "is_recommended": true,
+      "is_new": true,
+      "is_seasonal": true,
+      "is_popular": true,
+      "created_at": "2025-05-18T14:09:04.474Z",
+      "tags": [
+        4
+      ]
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 20,
+    "fields": {
+      "name": "Название товара: Ботинки \"Челленджер\"",
+      "slug": "challenger-boots",
+      "description": "Кожаные ботинки для города.",
+      "price": "6000.00",
+      "discounted_price": null,
+      "is_discounted": false,
+      "stock": 0,
+      "image": "products/кож_бот.jpg",
+      "category": 8,
+      "brand": null,
+      "rating": "0.0",
+      "seasonal_tag": null,
+      "is_recommended": false,
+      "is_new": true,
+      "is_seasonal": false,
+      "is_popular": false,
+      "created_at": "2025-05-18T14:14:37.274Z",
+      "tags": []
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 21,
+    "fields": {
+      "name": "Туфли \"Офисные\"",
+      "slug": "men-office-shoes",
+      "description": "Классические мужские туфли.",
+      "price": "4500.00",
+      "discounted_price": null,
+      "is_discounted": false,
+      "stock": 0,
+      "image": "products/оф_бот.jpg",
+      "category": 8,
+      "brand": null,
+      "rating": "0.0",
+      "seasonal_tag": null,
+      "is_recommended": false,
+      "is_new": false,
+      "is_seasonal": true,
+      "is_popular": false,
+      "created_at": "2025-05-18T14:16:01.663Z",
+      "tags": []
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 22,
+    "fields": {
+      "name": "Сандалии \"Кемпинг\"",
+      "slug": "camping-sandals",
+      "description": "Удобные сандалии для отдыха.",
+      "price": "2200.00",
+      "discounted_price": null,
+      "is_discounted": false,
+      "stock": 0,
+      "image": "products/кемпинг.jpg",
+      "category": 8,
+      "brand": null,
+      "rating": "0.0",
+      "seasonal_tag": null,
+      "is_recommended": false,
+      "is_new": false,
+      "is_seasonal": true,
+      "is_popular": false,
+      "created_at": "2025-05-18T14:18:00.529Z",
+      "tags": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 23,
+    "fields": {
+      "name": "Кеды \"Классик\"",
+      "slug": "classic-canvas-sneakers",
+      "description": "Простые и стильные кеды.",
+      "price": "2700.00",
+      "discounted_price": null,
+      "is_discounted": false,
+      "stock": 0,
+      "image": "products/кеды.jpg",
+      "category": 8,
+      "brand": null,
+      "rating": "0.0",
+      "seasonal_tag": null,
+      "is_recommended": false,
+      "is_new": false,
+      "is_seasonal": true,
+      "is_popular": true,
+      "created_at": "2025-05-18T14:20:19.072Z",
+      "tags": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 24,
+    "fields": {
+      "name": "Сапоги \"Зимний драйв\"",
+      "slug": "winter-drive-boots",
+      "description": "Теплые зимние ботинки.",
+      "price": "5800.00",
+      "discounted_price": "5299.00",
+      "is_discounted": true,
+      "stock": 0,
+      "image": "products/зим_бот.jpg",
+      "category": 8,
+      "brand": null,
+      "rating": "0.0",
+      "seasonal_tag": null,
+      "is_recommended": false,
+      "is_new": false,
+      "is_seasonal": false,
+      "is_popular": false,
+      "created_at": "2025-05-18T14:23:41.372Z",
+      "tags": [
+        6
+      ]
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 25,
+    "fields": {
+      "name": "Мокасины \"Премиум\"",
+      "slug": "premium-moccasins",
+      "description": "Стильные мокасины из кожи.",
+      "price": "3500.00",
+      "discounted_price": null,
+      "is_discounted": false,
+      "stock": 0,
+      "image": "products/мокассины1.jpg",
+      "category": 8,
+      "brand": null,
+      "rating": "0.0",
+      "seasonal_tag": null,
+      "is_recommended": false,
+      "is_new": false,
+      "is_seasonal": false,
+      "is_popular": false,
+      "created_at": "2025-05-18T14:25:49.504Z",
+      "tags": [
+        5
+      ]
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 26,
+    "fields": {
+      "name": "Лоферы \"Бизнес\"",
+      "slug": "business-loafers",
+      "description": "Элегантные лоферы для офиса.",
+      "price": "4200.00",
+      "discounted_price": null,
+      "is_discounted": false,
+      "stock": 0,
+      "image": "products/лоферы.jpg",
+      "category": 8,
+      "brand": null,
+      "rating": "0.0",
+      "seasonal_tag": null,
+      "is_recommended": false,
+      "is_new": false,
+      "is_seasonal": true,
+      "is_popular": false,
+      "created_at": "2025-05-18T14:28:12.412Z",
+      "tags": [
+        5
+      ]
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 27,
+    "fields": {
+      "name": "Слипоны \"Минимал\"",
+      "slug": "minimal-slip-ons",
+      "description": "Удобные слипоны на каждый день.",
+      "price": "2300.00",
+      "discounted_price": null,
+      "is_discounted": false,
+      "stock": 0,
+      "image": "products/Слипоны.jpg",
+      "category": 8,
+      "brand": null,
+      "rating": "0.0",
+      "seasonal_tag": null,
+      "is_recommended": true,
+      "is_new": false,
+      "is_seasonal": false,
+      "is_popular": false,
+      "created_at": "2025-05-18T14:35:05.148Z",
+      "tags": []
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 28,
+    "fields": {
+      "name": "Полуботинки \"Универсал\"",
+      "slug": "universal-shoes",
+      "description": "Демисезонные полуботинки.",
+      "price": "3900.00",
+      "discounted_price": null,
+      "is_discounted": false,
+      "stock": 0,
+      "image": "products/Демисезонные_полуботинки2.jpg",
+      "category": 8,
+      "brand": null,
+      "rating": "0.0",
+      "seasonal_tag": null,
+      "is_recommended": false,
+      "is_new": false,
+      "is_seasonal": false,
+      "is_popular": true,
+      "created_at": "2025-05-18T14:37:00.710Z",
+      "tags": [
+        8
+      ]
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 29,
+    "fields": {
+      "name": "Ботинки \"Треккинг\"",
+      "slug": "trekking-boots",
+      "description": "Прочные ботинки для походов.",
+      "price": "7500.00",
+      "discounted_price": null,
+      "is_discounted": false,
+      "stock": 0,
+      "image": "products/поход.jpg",
+      "category": 8,
+      "brand": null,
+      "rating": "0.0",
+      "seasonal_tag": null,
+      "is_recommended": false,
+      "is_new": true,
+      "is_seasonal": false,
+      "is_popular": false,
+      "created_at": "2025-05-18T14:39:12.353Z",
+      "tags": [
+        8
+      ]
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 30,
+    "fields": {
+      "name": "лето",
+      "slug": "",
+      "description": "vbhjnkl;';lkjhgfcdxfghjmk,l",
+      "price": "2000.00",
+      "discounted_price": null,
+      "is_discounted": false,
+      "stock": 0,
+      "image": "products/photo_2025-05-06_10-58-16.jpg",
+      "category": 6,
+      "brand": null,
+      "rating": "0.0",
+      "seasonal_tag": null,
+      "is_recommended": false,
+      "is_new": false,
+      "is_seasonal": false,
+      "is_popular": false,
+      "created_at": "2025-05-28T17:04:04.851Z",
+      "tags": [
+        8
+      ]
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 31,
+    "fields": {
+      "name": "каблук",
+      "slug": "-1",
+      "description": "мвсч",
+      "price": "15000.00",
+      "discounted_price": null,
+      "is_discounted": false,
+      "stock": 0,
+      "image": "products/images/Group_1.png",
+      "category": 5,
+      "brand": null,
+      "rating": "0.0",
+      "seasonal_tag": null,
+      "is_recommended": false,
+      "is_new": false,
+      "is_seasonal": false,
+      "is_popular": false,
+      "created_at": "2025-05-28T21:28:18.061Z",
+      "tags": [
+        1
+      ]
+    }
+  }
+]

@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Админ-панель | Обувь{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background-color: #111;
+        color: #fff;
+        margin: 0;
+        padding: 0;
+    }
+
+    .admin-container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    .admin-title {
+        text-align: center;
+        font-size: 2.8rem;
+        font-weight: bold;
+        margin-bottom: 50px;
+        color: #fff;
+    }
+
+    .admin-blocks {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 30px;
+        justify-content: center;
+    }
+
+    .admin-block {
+        background-color: #000;
+        color: #fff;
+        border-radius: 20px;
+        min-width: 260px;
+        flex: 1 1 260px;
+        max-width: 280px;
+        padding: 30px 25px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+        user-select: none;
+    }
+    .admin-block:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 16px 40px rgba(0,0,0,0.8);
+    }
+
+    .admin-icon {
+        font-size: 4rem;
+        margin-bottom: 18px;
+        background-color: #111;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(255,255,255,0.15);
+        transition: background-color 0.3s ease;
+        width: 90px;
+        height: 90px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+    }
+    .admin-block:hover .admin-icon {
+        background-color: #222;
+    }
+
+    .admin-title-block {
+        font-weight: 700;
+        font-size: 1.7rem;
+        margin-bottom: 12px;
+        letter-spacing: 0.05em;
+    }
+
+    .admin-desc {
+        color: #bbb;
+        font-size: 1rem;
+        margin-bottom: 25px;
+        line-height: 1.4;
+        min-height: 54px; /* поддержка равной высоты */
+    }
+
+    .admin-button {
+        background-color: #fff;
+        color: #000;
+        padding: 12px 30px;
+        border-radius: 24px;
+        font-weight: 600;
+        font-size: 1rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+        border: none;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: background-color 0.3s ease;
+        cursor: pointer;
+        user-select: none;
+    }
+    .admin-button:hover,
+    .admin-button:focus {
+        background-color: #e2e2e2;
+        color: #111;
+        outline: none;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        text-decoration: none;
+    }
+
+    /* Для "Добавить" кнопки — светло-серый фон */
+    .admin-button.success {
+        background-color: #ccc;
+    }
+    .admin-button.success:hover,
+    .admin-button.success:focus {
+        background-color: #ddd;
+        color: #111;
+    }
+
+    /* Адаптация под мобилки */
+    @media (max-width: 992px) {
+        .admin-blocks {
+            justify-content: center;
+        }
+        .admin-block {
+            max-width: 320px;
+        }
+    }
+    @media (max-width: 576px) {
+        .admin-blocks {
+            flex-direction: column;
+            align-items: center;
+        }
+        .admin-block {
+            max-width: 100%;
+            width: 100%;
+            min-width: unset;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container admin-container">
+    <h1 class="admin-title" aria-label="Административная панель управления">Админ-панель</h1>
+    <div class="admin-blocks" role="list">
+        <div class="admin-block" role="listitem" tabindex="0" aria-label="Раздел управление заказами">
+            <div class="admin-icon" aria-hidden="true">
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+            <div class="admin-title-block">Заказы</div>
+            <p class="admin-desc">Просмотр, статусы, управление заказами</p>
+            <a href="{% url 'custom_admin:order_management' %}" class="admin-button" aria-label="Перейти к управлению заказами">
+                <i class="fas fa-arrow-right"></i> Перейти
+            </a>
+        </div>
+        <div class="admin-block" role="listitem" tabindex="0" aria-label="Раздел управление пользователями">
+            <div class="admin-icon" aria-hidden="true">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="admin-title-block">Пользователи</div>
+            <p class="admin-desc">Управление аккаунтами и правами</p>
+            <a href="{% url 'custom_admin:user_management' %}" class="admin-button" aria-label="Перейти к управлению пользователями">
+                <i class="fas fa-arrow-right"></i> Перейти
+            </a>
+        </div>
+        <div class="admin-block" role="listitem" tabindex="0" aria-label="Раздел управление товарами">
+            <div class="admin-icon" aria-hidden="true">
+                <i class="fas fa-box-open"></i>
+            </div>
+            <div class="admin-title-block">Товары</div>
+            <p class="admin-desc">Каталог и добавление новых товаров</p>
+            <div style="display:flex; justify-content:center; gap: 1rem; flex-wrap: wrap;">
+                <a href="{% url 'products:list' %}" class="admin-button" aria-label="Просмотр списка товаров">
+                    <i class="fas fa-list"></i> Список
+                </a>
+                <a href="{% url 'products:create' %}" class="admin-button success" aria-label="Добавить новый товар">
+                    <i class="fas fa-plus"></i> Добавить
+                </a>
+            </div>
+        </div>
+        <div class="admin-block" role="listitem" tabindex="0" aria-label="Раздел отчеты и аналитика">
+            <div class="admin-icon" aria-hidden="true">
+                <i class="fas fa-chart-bar"></i>
+            </div>
+            <div class="admin-title-block">Отчеты</div>
+            <p class="admin-desc">Аналитика и экспорт продаж</p>
+            <a href="{% url 'custom_admin:sales_report' %}" class="admin-button" aria-label="Скачать отчеты">
+                <i class="fas fa-download"></i> Скачать
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

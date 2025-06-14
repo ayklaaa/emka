@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Отчет о продажах</h2>
+<p>Нажмите кнопку ниже, чтобы скачать отчет о всех заказах в формате Excel.</p>
+<a href="{% url 'custom_admin:sales_report' %}" class="btn btn-success">Скачать отчет</a>
+{% endblock %}

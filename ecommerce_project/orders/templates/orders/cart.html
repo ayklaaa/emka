@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Корзина{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <h2 class="mb-4 text-center fw-bold">Ваша корзина</h2>
+
+  {% if cart.items.all %}
+    <form method="post" action="{% url 'orders:update_cart' %}">
+      {% csrf_token %}
+      <div class="table-responsive">
+        <table class="table table-borderless align-middle text-center">
+          <thead class="table-light">
+            <tr class="text-uppercase small">
+              <th>Товар</th>
+              <th>Размер</th>
+              <th>Количество</th>
+              <th>Цена</th>
+              <th>Итого</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in cart.items.all %}
+            <tr class="border-bottom">
+              <td class="py-4">
+                <div class="fw-semibold">{{ item.product.name }}</div>
+              </td>
+              <td class="py-4">{{ item.size|default:"-" }}</td>
+              <td class="py-4" style="max-width: 100px;">
+                <input type="number" name="quantity_{{ item.id }}" value="{{ item.quantity }}" min="1" class="form-control text-center border-dark">
+              </td>
+              <td class="py-4">{{ item.product.price }} ₽</td>
+              <td class="py-4 fw-bold">{{ item.total_price }} ₽</td>
+              <td class="py-4">
+                <a href="{% url 'orders:remove_from_cart' item.id %}" class="btn btn-outline-dark btn-sm">
+                  ×
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </form>
+
+    <div class="text-end mt-5">
+      <h4 class="fw-bold">Общая сумма: {{ cart.total_price }} ₽</h4>
+      <p class="text-muted mt-2">Ожидаемая дата доставки: <strong>{{ estimated_delivery_date }}</strong></p>
+      <a href="{% url 'orders:checkout' %}" class="btn btn-dark btn-lg mt-3">
+        Оформить заказ
+      </a>
+    </div>
+
+  {% else %}
+    <div class="text-center">
+      <p class="lead">Ваша корзина пуста</p>
+      <a href="{% url 'products:product_list' %}" class="btn btn-outline-dark">
+        Продолжить покупки
+      </a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

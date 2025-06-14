@@ -1,0 +1,206 @@
+{% if products %}
+<div class="compare-container bg-body rounded-3 shadow-sm p-3 p-md-4">
+    <div class="table-responsive">
+        <table class="table table-hover compare-table mb-0">
+            <thead>
+                <tr>
+                    <th class="bg-body-tertiary" style="width: 20%; min-width: 200px;">Характеристики</th>
+                    {% for product in products %}
+                    <th class="text-center p-0" style="width: calc(80% / {{ products|length }});">
+                        <div class="position-relative h-100">
+                            <div class="compare-product-card p-3 h-100 d-flex flex-column border">
+                                <div class="product-image-container mb-3 bg-body-secondary rounded">
+                                    {% if product.images.first %}
+                                    <img src="{{ product.images.first.image.url }}"
+                                         alt="{{ product.name }}"
+                                         class="img-fluid rounded"
+                                         style="max-height: 160px; object-fit: contain;">
+                                    {% else %}
+                                    <div class="d-flex align-items-center justify-content-center h-100">
+                                        <i class="fas fa-image fa-3x text-body-secondary"></i>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <h5 class="product-title fs-6 mb-2 text-body">{{ product.name }}</h5>
+
+                                <div class="product-price mb-2 mt-auto">
+                                    {% if product.discounted_price %}
+                                    <span class="fs-5 fw-bold">{{ product.discounted_price }} ₽</span>
+                                    <span class="text-decoration-line-through text-body-tertiary ms-2 small">{{ product.price }} ₽</span>
+                                    {% else %}
+                                    <span class="fs-5 fw-bold">{{ product.price }} ₽</span>
+                                    {% endif %}
+                                </div>
+
+                                <div class="d-flex justify-content-center gap-2 mt-auto">
+                                    <a href="{% url 'orders:add_to_cart' product.id %}"
+                                       class="btn btn-sm btn-dark flex-grow-1">
+                                        <i class="fas fa-shopping-cart me-1"></i>Купить
+                                    </a>
+                                    <button class="btn btn-sm btn-outline-dark compare-remove"
+                                            data-id="{{ product.id }}"
+                                            title="Удалить">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="bg-body-tertiary">
+                    <th colspan="{{ products|length|add:1 }}" class="fw-normal text-body">
+                        <i class="fas fa-list-alt me-2"></i> Основные характеристики
+                    </th>
+                </tr>
+                <tr>
+                    <td class="text-body">Цена</td>
+                    {% for product in products %}
+                    <td class="text-center text-body">
+                        {% if product.discounted_price %}
+                        <span class="fw-bold">{{ product.discounted_price }} ₽</span>
+                        <div class="text-decoration-line-through text-body-tertiary small">{{ product.price }} ₽</div>
+                        {% else %}
+                        <span class="fw-bold">{{ product.price }} ₽</span>
+                        {% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-end mt-3">
+        <button class="btn btn-sm btn-outline-dark" id="clearCompare">
+            <i class="fas fa-trash-alt me-1"></i>Очистить список
+        </button>
+    </div>
+</div>
+{% else %}
+<div class="empty-compare text-center py-5 bg-body rounded-3 shadow-sm border">
+    <div class="mb-4">
+        <i class="fas fa-exchange-alt fa-4x text-body-tertiary"></i>
+    </div>
+    <h3 class="h4 text-body mb-3">Список сравнения пуст</h3>
+    <p class="text-body-secondary mb-4">Добавьте товары для сравнения из каталога</p>
+    <a href="{% url 'products:product_list' %}" class="btn btn-dark px-4">
+        <i class="fas fa-shopping-bag me-2"></i>Перейти в каталог
+    </a>
+</div>
+{% endif %}
+
+<style>
+    .compare-container {
+        border: 1px solid var(--bs-border-color);
+    }
+    .compare-product-card {
+        transition: all 0.2s ease;
+    }
+    .compare-table th {
+        vertical-align: middle;
+        border-bottom-width: 1px;
+    }
+    .compare-table td {
+        vertical-align: middle;
+        border-bottom: 1px solid var(--bs-border-color);
+    }
+    .product-image-container {
+        height: 160px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        overflow: hidden;
+    }
+
+    /* Адаптивность */
+    @media (max-width: 992px) {
+        .compare-table td,
+        .compare-table th {
+            font-size: 0.9rem;
+            padding: 0.75rem;
+        }
+        .product-image-container {
+            height: 120px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .compare-container {
+            padding: 1rem !important;
+        }
+        .compare-table td,
+        .compare-table th {
+            font-size: 0.85rem;
+            padding: 0.5rem;
+        }
+        .product-title {
+            font-size: 0.8rem;
+        }
+        .product-price {
+            font-size: 0.9rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .compare-product-card {
+            padding: 0.5rem !important;
+        }
+        .product-image-container {
+            height: 80px;
+        }
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+    }
+</style>
+
+<script>
+$(document).ready(function() {
+    // Удаление товара из сравнения
+    $('.compare-remove').click(function() {
+        const productId = $(this).data('id');
+        const $card = $(this).closest('th');
+
+        if (confirm('Удалить товар из сравнения?')) {
+            $.ajax({
+                url: `/products/compare/remove/${productId}/`,
+                type: 'POST',
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                beforeSend: function() {
+                    $card.addClass('bg-body-tertiary');
+                },
+                success: function() {
+                    $card.fadeOut(300, function() {
+                        $(this).remove();
+                        if ($('.compare-remove').length === 0) {
+                            location.reload();
+                        }
+                    });
+                }
+            });
+        }
+    });
+
+    // Очистка всего списка сравнения
+    $('#clearCompare').click(function() {
+        if (confirm('Вы уверены, что хотите очистить список сравнения?')) {
+            $.ajax({
+                url: '{% url "products:compare_clear" %}',
+                type: 'POST',
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function() {
+                    location.reload();
+                }
+            });
+        }
+    });
+});
+</script>

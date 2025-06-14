@@ -1,0 +1,248 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">{{ category.name }}</h1>
+        <div class="sorting-dropdown">
+            <select class="form-select form-select-sm" id="sortSelect" style="width: 200px;">
+                <option selected>Сортировать по</option>
+                <option value="price_asc">Цена по возрастанию</option>
+                <option value="price_desc">Цена по убыванию</option>
+                <option value="popular">Популярные</option>
+                <option value="newest">Новинки</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        {% for product in products %}
+        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card product-card h-100 border-0 shadow-sm">
+                <!-- Бейдж скидки -->
+                {% if product.discount_price %}
+                <div class="badge bg-danger position-absolute" style="top: 10px; right: 10px;">
+                    -{{ product.get_discount_percent }}%
+                </div>
+                {% endif %}
+
+                <!-- Изображение товара -->
+                <a href="{% url 'products:product_detail' product.slug %}" class="product-image-wrapper">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                    {% else %}
+                        <img src="{% static 'img/default-product.png' %}" class="card-img-top" alt="No image">
+                    {% endif %}
+                </a>
+
+                <div class="card-body pt-3 pb-2">
+                    <!-- Категория -->
+                    <div class="product-category small text-muted mb-1">
+                        {{ product.category.name }}
+                    </div>
+
+                    <!-- Название -->
+                    <h5 class="card-title mb-2">
+                        <a href="{% url 'products:product_detail' product.slug %}" class="text-decoration-none text-dark">
+                            {{ product.name|truncatechars:40 }}
+                        </a>
+                    </h5>
+
+                    <!-- Рейтинг -->
+                    <div class="product-rating mb-2">
+                        <div class="stars text-warning">
+                            {% with ''|center:product.rating as range %}
+                            {% for _ in range %}★{% endfor %}
+                            {% endwith %}
+                        </div>
+                        <small class="text-muted">({{ product.reviews.count }})</small>
+                    </div>
+
+                    <!-- Цена -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            {% if product.discount_price %}
+                            <span class="text-danger fw-bold h5">{{ product.discount_price }} ₽</span>
+                            <span class="text-muted text-decoration-line-through small">{{ product.price }} ₽</span>
+                            {% else %}
+                            <span class="fw-bold h5">{{ product.price }} ₽</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Кнопки действий -->
+                    <div class="d-flex gap-2">
+                        <form action="{% url 'orders:add_to_cart' product.id %}" method="post" class="w-100">
+                            {% csrf_token %}
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="btn btn-dark btn-sm w-100 py-2">
+                                <i class="fas fa-shopping-cart me-1"></i> В корзину
+                            </button>
+                        </form>
+                        <a href="{% url 'products:add_to_wishlist' product.id %}" class="btn btn-outline-secondary btn-sm p-2">
+                            <i class="far fa-heart"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info text-center py-4">
+                <i class="fas fa-info-circle me-2"></i>
+                В этой категории пока нет товаров
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Пагинация -->
+    {% if products.has_other_pages %}
+    <nav aria-label="Page navigation" class="mt-5">
+        <ul class="pagination justify-content-center">
+            {% if products.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ products.previous_page_number }}">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+            </li>
+            {% endif %}
+
+            {% for i in products.paginator.page_range %}
+            {% if products.number == i %}
+            <li class="page-item active">
+                <span class="page-link">{{ i }}</span>
+            </li>
+            {% else %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+
+            {% if products.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ products.next_page_number }}">
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+
+<style>
+    /* Стили карточек товаров */
+    .product-card {
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        background-color: #fff;
+        border: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .dark-mode .product-card {
+        background-color: var(--dark-card);
+        border-color: var(--dark-border);
+    }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+    }
+
+    .dark-mode .product-card:hover {
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3) !important;
+    }
+
+    .product-image-wrapper {
+        display: block;
+        height: 220px;
+        padding: 20px;
+        background: #f9f9f9;
+        text-align: center;
+    }
+
+    .dark-mode .product-image-wrapper {
+        background: #1a1a1a;
+    }
+
+    .product-image-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        transition: transform 0.3s ease;
+    }
+
+    .product-card:hover .product-image-wrapper img {
+        transform: scale(1.05);
+    }
+
+    .product-category {
+        font-size: 0.8rem;
+    }
+
+    .product-rating {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    /* Пагинация */
+    .page-link {
+        border-radius: 8px !important;
+        margin: 0 5px;
+        border: none;
+        color: #333;
+    }
+
+    .dark-mode .page-link {
+        background-color: var(--dark-card);
+        color: var(--dark-text);
+    }
+
+    .page-item.active .page-link {
+        background-color: #333;
+        border-color: #333;
+    }
+
+    .dark-mode .page-item.active .page-link {
+        background-color: #555;
+        border-color: #555;
+    }
+
+    /* Адаптивность */
+    @media (max-width: 768px) {
+        .product-image-wrapper {
+            height: 180px;
+            padding: 15px;
+        }
+
+        .card-title {
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<script>
+    // Сортировка товаров
+    document.getElementById('sortSelect').addEventListener('change', function() {
+        const sortValue = this.value;
+        let url = new URL(window.location.href);
+
+        if(sortValue === 'price_asc') {
+            url.searchParams.set('sort', 'price_asc');
+        } else if(sortValue === 'price_desc') {
+            url.searchParams.set('sort', 'price_desc');
+        } else if(sortValue === 'popular') {
+            url.searchParams.set('sort', 'popular');
+        } else if(sortValue === 'newest') {
+            url.searchParams.set('sort', 'newest');
+        }
+
+        window.location.href = url.toString();
+    });
+</script>
+{% endblock %}

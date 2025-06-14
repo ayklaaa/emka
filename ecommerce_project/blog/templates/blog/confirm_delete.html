@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Удаление статьи{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Подтверждение удаления</h1>
+    <p>Вы уверены, что хотите удалить статью "{{ article.title }}"?</p>
+    
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="delete-btn">Да, удалить</button>
+        <a href="{% url 'blog:blog' %}" class="cancel-btn">Отмена</a>
+    </form>
+</div>
+{% endblock %}

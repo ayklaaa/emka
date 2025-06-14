@@ -1,0 +1,429 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}О нас | Обувной магазин{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
+<style>
+    :root {
+        --brown: #ffffff;
+        --brown-dark: #a78a7f;
+        --beige: #1a1a1a;
+        --white: #ffffff;
+        --black: #121212;
+        --gray: #2d2d2d;
+        --light-gray: #3d3d3d;
+    }
+
+    body {
+        background-color: #f8f9fa;
+        color: #212529;
+    }
+
+    body.dark-theme {
+        background-color: #121212;
+        color: #e0e0e0;
+    }
+
+    /* Hero Section */
+    .about-hero {
+        background: linear-gradient(135deg, #121212 0%, #1a1a1a 100%);
+        color: white;
+        padding: 120px 0;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 80px;
+        border-bottom: 1px solid #3d3d3d;
+        border-radius: 0 0 20px 20px;
+    }
+
+    .about-hero-title {
+        font-size: 3.5rem;
+        font-weight: 900;
+        margin-bottom: 1.5rem;
+        text-shadow: 3px 3px 0 rgba(0,0,0,0.5);
+        animation: fadeInDown 1s ease;
+    }
+
+    .about-hero-subtitle {
+        font-size: 1.5rem;
+        margin-bottom: 2.5rem;
+        opacity: 0.9;
+        animation: fadeIn 1.5s ease;
+    }
+
+    .hero-stats {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-top: 40px;
+    }
+
+    .hero-stat {
+        background: rgba(30, 30, 30, 0.7);
+        padding: 20px 30px;
+        border-radius: 10px;
+        backdrop-filter: blur(5px);
+        border: 1px solid var(--light-gray);
+    }
+
+    .hero-stat-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 5px;
+        color: var(--white);
+    }
+
+    /* Section Styles */
+    .about-section {
+        padding: 80px 0;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 60px;
+        position: relative;
+        color: #ffffff;
+    }
+
+    /* Стиль для заголовка "Наша команда" */
+    .team-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 60px;
+        position: relative;
+        color: #000000; /* Черный цвет в светлой теме */
+    }
+
+    /* Темная тема - белый текст */
+    body.dark-theme .team-title {
+        color: #ffffff;
+    }
+
+    .section-title::after {
+        content: "";
+        position: absolute;
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(to right, var(--brown), var(--white));
+    }
+
+    .story-content {
+        background: var(--beige);
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        color: var(--white);
+        border: 1px solid var(--light-gray);
+    }
+
+    .story-highlight {
+        color: var(--brown);
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 20px;
+    }
+
+    .story-image {
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        border: 1px solid var(--light-gray);
+    }
+
+    .story-image img {
+        width: 100%;
+        height: auto;
+        transition: transform 0.5s ease;
+    }
+
+    .story-image:hover img {
+        transform: scale(1.03);
+    }
+
+    .mission-section {
+        background: linear-gradient(135deg, #121212 0%, #1a1a1a 100%);
+        color: var(--white);
+        padding: 80px 0;
+        border-radius: 15px;
+        margin: 80px 0;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--light-gray);
+    }
+
+    .mission-icon {
+        position: absolute;
+        top: -25px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 50px;
+        height: 50px;
+        background-color: var(--brown);
+        color: var(--black);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        z-index: 2;
+        border: 2px solid var(--light-gray);
+    }
+
+    .mission-content {
+        position: relative;
+        z-index: 2;
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .mission-text {
+        font-size: 1.2rem;
+        line-height: 1.8;
+    }
+
+    .team-card {
+        background: var(--beige);
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        text-align: center;
+        margin-top: 30px;
+        color: var(--white);
+        border: 1px solid var(--light-gray);
+    }
+
+    .team-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+    }
+
+    .team-img-container {
+        width: 100%;
+        height: 300px;
+        overflow: hidden;
+        position: relative;
+        margin-bottom: 20px;
+    }
+
+    .team-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: top center;
+    }
+
+    .team-info {
+        padding: 30px;
+    }
+
+    .team-name {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+        color: var(--white);
+    }
+
+    .team-position {
+        color: var(--brown);
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    .team-quote {
+        font-style: italic;
+        color: var(--white);
+        line-height: 1.6;
+    }
+
+    .about-cta {
+        background: linear-gradient(135deg, #121212 0%, #1a1a1a 100%);
+        color: var(--white);
+        padding: 80px 0;
+        text-align: center;
+        border-radius: 15px;
+        margin-top: 80px;
+        border: 1px solid var(--light-gray);
+    }
+
+    .cta-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 20px;
+    }
+
+    .cta-btn {
+        background-color: var(--brown);
+        color: var(--black);
+        font-weight: 700;
+        padding: 15px 40px;
+        border-radius: 50px;
+        display: inline-block;
+        transition: all 0.3s ease;
+        margin-top: 30px;
+        border: none;
+    }
+
+    .cta-btn:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+        background-color: var(--brown-dark);
+        color: var(--white);
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .about-hero-title {
+            font-size: 2.5rem;
+        }
+
+        .about-hero-subtitle {
+            font-size: 1.2rem;
+        }
+
+        .hero-stats {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .section-title, .team-title {
+            font-size: 2rem;
+        }
+
+        .cta-title {
+            font-size: 2rem;
+        }
+
+        .team-img-container {
+            height: 250px;
+        }
+    }
+</style>
+
+<div class="about-page">
+    <!-- Hero Section -->
+    <section class="about-hero">
+        <div class="about-hero-content">
+            <h1 class="about-hero-title">Добро пожаловать в наш Мир Обуви</h1>
+            <p class="about-hero-subtitle">С 2017 года мы шагаем вместе с вами</p>
+
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="hero-stat-number">7+</div>
+                    <div>лет на рынке</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-number">20K+</div>
+                    <div>довольных клиентов</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-number">500+</div>
+                    <div>моделей обуви</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        <!-- Our Story -->
+        <section class="about-section">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <div class="story-content">
+                        <h2 class="section-title text-start mb-4">Наша история</h2>
+                        <p class="story-highlight">От маленького бутика до ведущего обувного бренда</p>
+                        <p>С 2017 года мы стремимся предлагать качественную и стильную обувь для всей семьи. Начав с одного магазина, сегодня мы гордимся собственной сетью и интернет-магазином, доставляя радость покупок по всей стране.</p>
+                        <p>Мы верим, что правильная пара обуви делает каждый шаг комфортным и уверенным.</p>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="story-image">
+                        <img src="{% static 'img/about-store.jpg' %}" alt="Наш магазин обуви">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mission -->
+        <section class="mission-section">
+            <div class="mission-icon">
+                <i class="bi bi-shield-check"></i>
+            </div>
+            <div class="mission-content">
+                <h2 class="section-title mb-4">Наша миссия</h2>
+                <p class="mission-text">Мы стремимся предложить идеальное сочетание комфорта, стиля и качества в каждой паре обуви, которую вы носите. Ваши шаги — наша забота.</p>
+            </div>
+        </section>
+
+        <!-- Team -->
+        <section class="about-section">
+            <h2 class="team-title">Наша команда</h2>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="team-card">
+                        <div class="team-img-container">
+                            <img src="{% static 'img/team1.jpeg' %}" class="team-img" alt="Директор">
+                        </div>
+                        <div class="team-info">
+                            <h3 class="team-name">Саубанова Эльвира Владимировна</h3>
+                            <p class="team-position">Директор</p>
+                            <p class="team-quote">"Каждая пара обуви рассказывает свою историю — мы создаём лучшие истории."</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="team-card">
+                        <div class="team-img-container">
+                            <img src="{% static 'img/team3.jpeg' %}" class="team-img" alt="Менеджер">
+                        </div>
+                        <div class="team-info">
+                            <h3 class="team-name">Ольга Смирнова</h3>
+                            <p class="team-position">Менеджер по продукции</p>
+                            <p class="team-quote">"Идеальная обувь начинается с идеального подбора."</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="team-card">
+                        <div class="team-img-container">
+                            <img src="{% static 'img/team2.jpeg' %}" class="team-img" alt="Дизайнер">
+                        </div>
+                        <div class="team-info">
+                            <h3 class="team-name">Игорь Козлов</h3>
+                            <p class="team-position">Продавец</p>
+                            <p class="team-quote">"Мы продаем комфорт, который движет мир вперёд."</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}
