@@ -7,7 +7,7 @@ def main():
     # Добавляем путь к корню проекта
     sys.path.append(str(Path(__file__).resolve().parent))
 
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ecommerce_project.ecommerce_project.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ecommerce_project.settings')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
