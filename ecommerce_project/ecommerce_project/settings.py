@@ -10,7 +10,7 @@ SECRET_KEY = os.getenv(
     'SECRET_KEY',
     'django-insecure-запасной-ключ-только-для-разработки'
 )
-DEBUG = False
+DEBUG = True 
 
 ALLOWED_HOSTS = os.getenv(
     'ALLOWED_HOSTS',
